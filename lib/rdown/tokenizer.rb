@@ -25,6 +25,8 @@ module Rdown
         case
         when on_beginning_of_line? && peek == SYMBOL_FOR_KEYWORD
           consume_keyword
+        when peek == "\n"
+          consume_line_break
         when peek == ' '
           consume_spaces
         else
@@ -44,6 +46,15 @@ module Rdown
         content: content,
         pointer: pointer,
         type: 'keyword',
+      }
+    end
+
+    def consume_line_break
+      pointer = scanner.pointer
+      scanner.pointer += "\n".bytesize
+      tokens << {
+        pointer: pointer,
+        type: 'line_break',
       }
     end
 

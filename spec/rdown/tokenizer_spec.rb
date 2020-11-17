@@ -6,17 +6,11 @@ RSpec.describe Rdown::Tokenizer do
       described_class.call(source)
     end
 
-    let(:source) do
-      <<~RD
-        @param pattern  検索するパターンです。
-        @param pos      検索を始めるインデックスです。
-      RD
-    end
-
     context 'with single parameter line' do
       let(:source) do
         <<~RD
           @param pattern 検索するパターンです。
+          @param pos 検索を始めるインデックスです。
         RD
       end
 
@@ -48,6 +42,33 @@ RSpec.describe Rdown::Tokenizer do
             },
             {
               pointer: 48,
+              type: 'line_break',
+            },
+            {
+              content: 'param',
+              pointer: 49,
+              type: 'keyword',
+            },
+            {
+              pointer: 55,
+              type: 'spaces',
+            },
+            {
+              content: 'pos',
+              pointer: 56,
+              type: 'word',
+            },
+            {
+              pointer: 59,
+              type: 'spaces',
+            },
+            {
+              content: '検索を始めるインデックスです。',
+              pointer: 60,
+              type: 'word',
+            },
+            {
+              pointer: 105,
               type: 'line_break',
             },
           ]

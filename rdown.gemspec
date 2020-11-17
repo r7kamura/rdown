@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Ryo Nakamura']
   spec.email         = ['r7kamura@gmail.com']
 
-  spec.summary       = 'TBD.'
+  spec.summary       = 'Parser for Ruby Reference Manual format.'
   spec.homepage      = 'https://github.com/r7kamura/rdown'
   spec.license       = 'MIT'
   spec.required_ruby_version = Gem::Requirement.new('>= 2.4.0')

@@ -27,6 +27,8 @@ module Rdown
           consume_keyword
         when peek == ' '
           consume_spaces
+        else
+          consume_word
         end
       end
       tokens
@@ -51,6 +53,16 @@ module Rdown
       tokens << {
         pointer: pointer,
         type: 'spaces',
+      }
+    end
+
+    def consume_word
+      pointer = scanner.pointer
+      content = scanner.scan(/.+/)
+      tokens << {
+        content: content,
+        pointer: pointer,
+        type: 'word',
       }
     end
 

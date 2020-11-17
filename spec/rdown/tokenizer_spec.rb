@@ -7,7 +7,7 @@ RSpec.describe Rdown::Tokenizer do
     end
 
     let(:source) do
-      '@param '
+      '@param pattern'
     end
 
     it 'returns tokens' do
@@ -21,6 +21,11 @@ RSpec.describe Rdown::Tokenizer do
           {
             pointer: 6,
             type: 'spaces',
+          },
+          {
+            content: 'pattern',
+            pointer: 7,
+            type: 'word',
           }
         ]
       )

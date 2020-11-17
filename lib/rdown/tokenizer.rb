@@ -21,15 +21,15 @@ module Rdown
     def call
       until on_eos?
         case
-        when on_beginning_of_line? && peek == '='
+        when on_beginning_of_line? && peek(1) == '='
           consume_line_beginning_equal
-        when on_beginning_of_line? && peek == '@'
+        when on_beginning_of_line? && peek(1) == '@'
           consume_keyword
-        when peek == "\n"
+        when peek(1) == "\n"
           consume_line_break
-        when peek == ' '
+        when peek(1) == ' '
           consume_spaces
-        when peek == '<'
+        when peek(1) == '<'
           consume_less_than
         when match?(/\Aclass\b/)
           consume_class
@@ -108,10 +108,8 @@ module Rdown
       }
     end
 
-    # @param [Regexp] regexp
-    # @return [Boolean]
-    def match?(regexp)
-      scanner.match?(regexp)
+    def match?(*args)
+      scanner.match?(*args)
     end
 
     # @return [Boolean]
@@ -124,9 +122,8 @@ module Rdown
       scanner.eos?
     end
 
-    # @return [String]
-    def peek
-      scanner.peek(1)
+    def peek(*args)
+      scanner.peek(*args)
     end
 
     def scan(*args)

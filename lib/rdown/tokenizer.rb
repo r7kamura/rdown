@@ -25,6 +25,8 @@ module Rdown
         case
         when on_beginning_of_line? && peek == SYMBOL_FOR_KEYWORD
           consume_keyword
+        when peek == ' '
+          consume_spaces
         end
       end
       tokens
@@ -40,6 +42,15 @@ module Rdown
         name: name,
         pointer: pointer,
         type: 'keyword',
+      }
+    end
+
+    def consume_spaces
+      pointer = scanner.pointer
+      scanner.scan(/ +/)
+      tokens << {
+        pointer: pointer,
+        type: 'spaces',
       }
     end
 

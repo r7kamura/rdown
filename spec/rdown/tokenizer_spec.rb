@@ -15,6 +15,7 @@ RSpec.describe Rdown::Tokenizer do
         [
           {
             name: 'param',
+            pointer: 0,
             type: 'keyword',
           }
         ]

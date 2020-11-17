@@ -58,7 +58,7 @@ module Rdown
 
     def consume_word
       pointer = scanner.pointer
-      content = scanner.scan(/.+/)
+      content = scanner.scan(/\S+/)
       tokens << {
         content: content,
         pointer: pointer,

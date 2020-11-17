@@ -23,12 +23,18 @@ module Rdown
     def call
       until on_eos?
         case
+        when on_beginning_of_line? && peek == '='
+          consume_line_beginning_equal
         when on_beginning_of_line? && peek == SYMBOL_FOR_KEYWORD
           consume_keyword
         when peek == "\n"
           consume_line_break
         when peek == ' '
           consume_spaces
+        when peek == '<'
+          consume_less_than
+        when match?(/\Aclass\b/)
+          consume_class
         else
           consume_word
         end
@@ -38,6 +44,15 @@ module Rdown
 
     private
 
+    def consume_class
+      pointer = scanner.pointer
+      scanner.pointer += 'class'.bytesize
+      tokens << {
+        pointer: pointer,
+        type: 'class',
+      }
+    end
+
     def consume_keyword
       pointer = scanner.pointer
       scanner.pointer += SYMBOL_FOR_KEYWORD.bytesize
@@ -46,6 +61,24 @@ module Rdown
         content: content,
         pointer: pointer,
         type: 'keyword',
+      }
+    end
+
+    def consume_less_than
+      pointer = scanner.pointer
+      scanner.pointer += '<'.bytesize
+      tokens << {
+        pointer: pointer,
+        type: 'less_than',
+      }
+    end
+
+    def consume_line_beginning_equal
+      pointer = scanner.pointer
+      scanner.pointer += '='.bytesize
+      tokens << {
+        pointer: pointer,
+        type: 'line_beginning_equal',
       }
     end
 
@@ -75,6 +108,12 @@ module Rdown
         pointer: pointer,
         type: 'word',
       }
+    end
+
+    # @param [Regexp] regexp
+    # @return [Boolean]
+    def match?(regexp)
+      scanner.match?(regexp)
     end
 
     # @return [Boolean]

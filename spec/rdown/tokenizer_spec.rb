@@ -7,11 +7,18 @@ RSpec.describe Rdown::Tokenizer do
     end
 
     let(:source) do
-      ''
+      '@param'
     end
 
-    it 'does not raise error' do
-      subject
+    it 'returns tokens' do
+      is_expected.to eq(
+        [
+          {
+            name: 'param',
+            type: 'keyword',
+          }
+        ]
+      )
     end
   end
 end

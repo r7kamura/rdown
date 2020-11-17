@@ -14,7 +14,7 @@ RSpec.describe Rdown::Tokenizer do
       is_expected.to eq(
         [
           {
-            name: 'param',
+            content: 'param',
             pointer: 0,
             type: 'keyword',
           },

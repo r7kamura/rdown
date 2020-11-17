@@ -39,9 +39,9 @@ module Rdown
     def consume_keyword
       pointer = scanner.pointer
       scanner.pointer += SYMBOL_FOR_KEYWORD.bytesize
-      name = scanner.scan(/\w+/)
+      content = scanner.scan(/\w+/)
       tokens << {
-        name: name,
+        content: content,
         pointer: pointer,
         type: 'keyword',
       }

@@ -12,8 +12,6 @@ module Rdown
       end
     end
 
-    SYMBOL_FOR_KEYWORD = '@'
-
     # @param [String] source
     def initialize(source)
       @source = source
@@ -25,7 +23,7 @@ module Rdown
         case
         when on_beginning_of_line? && peek == '='
           consume_line_beginning_equal
-        when on_beginning_of_line? && peek == SYMBOL_FOR_KEYWORD
+        when on_beginning_of_line? && peek == '@'
           consume_keyword
         when peek == "\n"
           consume_line_break
@@ -55,7 +53,7 @@ module Rdown
 
     def consume_keyword
       pointer = scanner.pointer
-      scanner.pointer += SYMBOL_FOR_KEYWORD.bytesize
+      scanner.pointer += '@'.bytesize
       content = scanner.scan(/\w+/)
       tokens << {
         content: content,

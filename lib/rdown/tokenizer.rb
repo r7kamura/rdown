@@ -47,7 +47,7 @@ module Rdown
       scanner.pointer += 'class'.bytesize
       tokens << {
         pointer: pointer,
-        type: 'class',
+        type: :class,
       }
     end
 
@@ -58,7 +58,7 @@ module Rdown
       tokens << {
         content: content,
         pointer: pointer,
-        type: 'keyword',
+        type: :keyword,
       }
     end
 
@@ -67,7 +67,7 @@ module Rdown
       scanner.pointer += '<'.bytesize
       tokens << {
         pointer: pointer,
-        type: 'less_than',
+        type: :less_than,
       }
     end
 
@@ -76,7 +76,7 @@ module Rdown
       scanner.pointer += '='.bytesize
       tokens << {
         pointer: pointer,
-        type: 'line_beginning_equal',
+        type: :line_beginning_equal,
       }
     end
 
@@ -85,7 +85,7 @@ module Rdown
       scanner.pointer += "\n".bytesize
       tokens << {
         pointer: pointer,
-        type: 'line_break',
+        type: :line_break,
       }
     end
 
@@ -94,7 +94,7 @@ module Rdown
       scanner.scan(/ +/)
       tokens << {
         pointer: pointer,
-        type: 'spaces',
+        type: :spaces,
       }
     end
 
@@ -104,7 +104,7 @@ module Rdown
       tokens << {
         content: content,
         pointer: pointer,
-        type: 'word',
+        type: :word,
       }
     end
 

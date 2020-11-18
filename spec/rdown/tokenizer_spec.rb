@@ -18,45 +18,45 @@ RSpec.describe Rdown::Tokenizer do
           [
             {
               pointer: 0,
-              type: 'line_beginning_equal',
+              type: :line_beginning_equal,
             },
             {
               pointer: 1,
-              type: 'spaces',
+              type: :spaces,
             },
             {
               pointer: 2,
-              type: 'class',
+              type: :class,
             },
             {
               pointer: 7,
-              type: 'spaces',
+              type: :spaces,
             },
             {
               content: 'Array',
               pointer: 8,
-              type: 'word',
+              type: :word,
             },
             {
               pointer: 13,
-              type: 'spaces',
+              type: :spaces,
             },
             {
               pointer: 14,
-              type: 'less_than',
+              type: :less_than,
             },
             {
               pointer: 15,
-              type: 'spaces',
+              type: :spaces,
             },
             {
               content: 'Object',
               pointer: 16,
-              type: 'word',
+              type: :word,
             },
             {
               pointer: 22,
-              type: 'line_break',
+              type: :line_break,
             },
           ]
         )
@@ -77,56 +77,56 @@ RSpec.describe Rdown::Tokenizer do
             {
               content: 'param',
               pointer: 0,
-              type: 'keyword',
+              type: :keyword,
             },
             {
               pointer: 6,
-              type: 'spaces',
+              type: :spaces,
             },
             {
               content: 'pattern',
               pointer: 7,
-              type: 'word',
+              type: :word,
             },
             {
               pointer: 14,
-              type: 'spaces',
+              type: :spaces,
             },
             {
               content: '検索するパターンです。',
               pointer: 15,
-              type: 'word',
+              type: :word,
             },
             {
               pointer: 48,
-              type: 'line_break',
+              type: :line_break,
             },
             {
               content: 'param',
               pointer: 49,
-              type: 'keyword',
+              type: :keyword,
             },
             {
               pointer: 55,
-              type: 'spaces',
+              type: :spaces,
             },
             {
               content: 'pos',
               pointer: 56,
-              type: 'word',
+              type: :word,
             },
             {
               pointer: 59,
-              type: 'spaces',
+              type: :spaces,
             },
             {
               content: '検索を始めるインデックスです。',
               pointer: 60,
-              type: 'word',
+              type: :word,
             },
             {
               pointer: 105,
-              type: 'line_break',
+              type: :line_break,
             },
           ]
         )

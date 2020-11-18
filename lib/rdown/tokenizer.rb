@@ -6,7 +6,7 @@ module Rdown
   class Tokenizer
     class << self
       # @param [String] source
-      # @return [Hash]
+      # @return [Array<Hash>]
       def call(source)
         new(source).call
       end
@@ -17,7 +17,7 @@ module Rdown
       @source = source
     end
 
-    # @return [Hash]
+    # @return [Array<Hash>]
     def call
       until on_eos?
         case

@@ -20,7 +20,7 @@ RSpec.describe Rdown::Parser do
         RD
       end
 
-      it 'raises' do
+      it do
         expect { subject }.to raise_error(Rdown::Errors::UnexpectedTokenTypeError)
       end
     end
@@ -41,7 +41,7 @@ RSpec.describe Rdown::Parser do
         RD
       end
 
-      it 'return expected node' do
+      it 'returns expected node' do
         is_expected.to eq(
           description: [
             {

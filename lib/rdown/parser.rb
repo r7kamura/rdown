@@ -4,7 +4,7 @@ module Rdown
   class Parser
     class << self
       # @param [Array<Hash>] tokens
-      # @return [Hash]
+      # @return [Rdown::Nodes::Class]
       def call(tokens)
         new(tokens).call
       end
@@ -15,6 +15,7 @@ module Rdown
       @tokens = tokens
     end
 
+    # @return [Rdown::Nodes::Class]
     def call
       parse_class
     end
@@ -32,11 +33,6 @@ module Rdown
     def consume(type)
       expect(type)
       @tokens.shift
-    end
-
-    # @param [Symbol] type
-    def consume_optional(type)
-      consume(type) if at?(type)
     end
 
     # @param [Symbol] type
@@ -59,6 +55,15 @@ module Rdown
 
     def parse_class
       heading = parse_class_heading
+      description = parse_description
+      ::Rdown::Nodes::Class.new(
+        description: description,
+        heading: heading,
+      )
+    end
+
+    # @return [Array<Rdown::Nodes::Base>]
+    def parse_description
       description = []
       until @tokens.empty?
         case
@@ -70,13 +75,10 @@ module Rdown
           consume(:line_break)
         end
       end
-      ::Rdown::Nodes::Class.new(
-        description: description,
-        heading: heading,
-      )
+      description
     end
 
-    # @return [Hash]
+    # @return [Rdown::Nodes::ClassHeading]
     def parse_class_heading
       consume(:line_beginning_equal)
       consume(:class)
@@ -92,7 +94,7 @@ module Rdown
       )
     end
 
-    # @return [Hash]
+    # @return [Rdown::Nodes::CodeBlock]
     def parse_code_block
       lines = []
       while at?(:code)
@@ -104,7 +106,7 @@ module Rdown
       )
     end
 
-    # @return [Hash]
+    # @return [Rdown::Nodes::Paragraph]
     def parse_paragraph
       content = parse_words
       consume(:line_break)

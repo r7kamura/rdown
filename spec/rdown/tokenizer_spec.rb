@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
+require 'active_support/core_ext/hash/keys'
+require 'active_support/core_ext/object/json'
+
 RSpec.describe Rdown::Tokenizer do
   describe '.call' do
     subject do
-      described_class.call(source)
+      described_class.call(source).as_json.map(&:deep_symbolize_keys)
     end
 
     context 'with class line' do
@@ -18,29 +21,29 @@ RSpec.describe Rdown::Tokenizer do
           [
             {
               pointer: 0,
-              type: :line_beginning_equal,
+              type: 'LineBeginningEqual',
             },
             {
               pointer: 2,
-              type: :class,
+              type: 'Class',
             },
             {
               content: 'Array',
               pointer: 8,
-              type: :word,
+              type: 'Word',
             },
             {
               pointer: 14,
-              type: :less_than,
+              type: 'LessThan',
             },
             {
               content: 'Object',
               pointer: 16,
-              type: :word,
+              type: 'Word',
             },
             {
               pointer: 22,
-              type: :line_break,
+              type: 'LineBreak',
             },
           ]
         )
@@ -61,40 +64,40 @@ RSpec.describe Rdown::Tokenizer do
             {
               content: 'param',
               pointer: 0,
-              type: :keyword,
+              type: 'Keyword',
             },
             {
               content: 'pattern',
               pointer: 7,
-              type: :word,
+              type: 'Word',
             },
             {
               content: '検索するパターンです。',
               pointer: 15,
-              type: :word,
+              type: 'Word',
             },
             {
               pointer: 48,
-              type: :line_break,
+              type: 'LineBreak',
             },
             {
               content: 'param',
               pointer: 49,
-              type: :keyword,
+              type: 'Keyword',
             },
             {
               content: 'pos',
               pointer: 56,
-              type: :word,
+              type: 'Word',
             },
             {
               content: '検索を始めるインデックスです。',
               pointer: 60,
-              type: :word,
+              type: 'Word',
             },
             {
               pointer: 105,
-              type: :line_break,
+              type: 'LineBreak',
             },
           ]
         )
@@ -115,18 +118,18 @@ RSpec.describe Rdown::Tokenizer do
       it 'returns expected tokens' do
         is_expected.to match(
           [
-            a_hash_including(type: :word),
-            a_hash_including(type: :line_break),
-            a_hash_including(type: :line_break),
+            a_hash_including(type: 'Word'),
+            a_hash_including(type: 'LineBreak'),
+            a_hash_including(type: 'LineBreak'),
             {
               content: '[1, 2, 3]',
               pointer: a_kind_of(Integer),
-              type: :code,
+              type: 'Code',
             },
-            a_hash_including(type: :line_break),
-            a_hash_including(type: :line_break),
-            a_hash_including(type: :word),
-            a_hash_including(type: :line_break),
+            a_hash_including(type: 'LineBreak'),
+            a_hash_including(type: 'LineBreak'),
+            a_hash_including(type: 'Word'),
+            a_hash_including(type: 'LineBreak'),
           ]
         )
       end

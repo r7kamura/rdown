@@ -6,7 +6,7 @@ require 'active_support/core_ext/object/json'
 RSpec.describe Rdown::Parser do
   describe '.class' do
     subject do
-      described_class.call(tokens)
+      described_class.call(tokens).as_json.deep_symbolize_keys
     end
 
     let(:tokens) do
@@ -42,7 +42,7 @@ RSpec.describe Rdown::Parser do
       end
 
       it 'return expected node' do
-        expect(subject.as_json.deep_symbolize_keys).to eq(
+        is_expected.to eq(
           description: [
             {
               content: '配列クラスです。 配列は任意の Ruby オブジェクトを要素として持つことができます。',

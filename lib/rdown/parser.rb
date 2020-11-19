@@ -22,20 +22,20 @@ module Rdown
 
     private
 
-    # @param [Symbol] type
+    # @param [String] type
     # @return [Boolean]
     def at?(type)
-      !@tokens.empty? && @tokens.first[:type] == type
+      !@tokens.empty? && @tokens.first.type == type
     end
 
-    # @param [Symbol] type
-    # @return [Hash]
+    # @param [String] type
+    # @return [Rdown::Tokens::Base]
     def consume(type)
       expect(type)
       @tokens.shift
     end
 
-    # @param [Symbol] type
+    # @param [String] type
     # @raise [Rdown::Errors::UnexpectedEndOfTokensError]
     # @raise [Rdown::Errors::UnexpectedTokenTypeError]
     def expect(type)
@@ -45,9 +45,9 @@ module Rdown
         raise ::Rdown::Errors::UnexpectedEndOfTokensError.new(
           expected_type: type,
         )
-      when token[:type] != type
+      when token.type != type
         raise ::Rdown::Errors::UnexpectedTokenTypeError.new(
-          actual_type: token[:type],
+          actual_type: token.type,
           expected_type: type,
         )
       end
@@ -67,12 +67,12 @@ module Rdown
       description = []
       until @tokens.empty?
         case
-        when at?(:code)
+        when at?('Code')
           description << parse_code_block
-        when at?(:word)
+        when at?('Word')
           description << parse_paragraph
         else
-          consume(:line_break)
+          consume('LineBreak')
         end
       end
       description
@@ -80,14 +80,14 @@ module Rdown
 
     # @return [Rdown::Nodes::ClassHeading]
     def parse_class_heading
-      consume(:line_beginning_equal)
-      consume(:class)
-      name = consume(:word)[:content]
-      if at?(:less_than)
-        consume(:less_than)
-        parent_name = consume(:word)[:content]
+      consume('LineBeginningEqual')
+      consume('Class')
+      name = consume('Word').content
+      if at?('LessThan')
+        consume('LessThan')
+        parent_name = consume('Word').content
       end
-      consume(:line_break)
+      consume('LineBreak')
       ::Rdown::Nodes::ClassHeading.new(
         name: name,
         parent_name: parent_name,
@@ -97,9 +97,9 @@ module Rdown
     # @return [Rdown::Nodes::CodeBlock]
     def parse_code_block
       lines = []
-      while at?(:code)
-        lines << consume(:code)[:content]
-        consume(:line_break)
+      while at?('Code')
+        lines << consume('Code').content
+        consume('LineBreak')
       end
       ::Rdown::Nodes::CodeBlock.new(
         content: lines.join("\n"),
@@ -108,21 +108,20 @@ module Rdown
 
     # @return [Rdown::Nodes::Paragraph]
     def parse_paragraph
-      content = parse_words
-      consume(:line_break)
-      while at?(:word)
-        content += " #{parse_words}"
-        consume(:line_break)
+      sections = []
+      while at?('Word')
+        sections << parse_words
+        consume('LineBreak')
       end
       ::Rdown::Nodes::Paragraph.new(
-        content: content,
+        content: sections.join(' '),
       )
     end
 
     # @return [String]
     def parse_words
       words = []
-      words << consume(:word)[:content] while at?(:word)
+      words << consume('Word').content while at?('Word')
       words.join(' ')
     end
   end

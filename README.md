@@ -1,6 +1,6 @@
 # Rdown
 
-Parser for Ruby Reference Manual format.
+Parser for Ruby Reference Manual.
 
 ## Installation
 

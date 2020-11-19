@@ -35,11 +35,6 @@ module Rdown
     end
 
     # @param [Symbol] type
-    def consume_optional(type)
-      consume(type) if at?(type)
-    end
-
-    # @param [Symbol] type
     # @raise [Rdown::Errors::UnexpectedEndOfTokensError]
     # @raise [Rdown::Errors::UnexpectedTokenTypeError]
     def expect(type)

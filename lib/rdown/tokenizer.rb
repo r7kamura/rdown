@@ -6,7 +6,7 @@ module Rdown
   class Tokenizer
     class << self
       # @param [String] source
-      # @return [Array<Hash>]
+      # @return [Array<Rdown::Tokens::Base>]
       def call(source)
         new(source).call
       end
@@ -17,7 +17,7 @@ module Rdown
       @source = source
     end
 
-    # @return [Array<Hash>]
+    # @return [Array<Rdown::Tokens::Base>]
     def call
       until on_eos?
         case
@@ -47,69 +47,62 @@ module Rdown
     def consume_class
       pointer = scanner.pointer
       scanner.pointer += 'class'.bytesize
-      tokens << {
+      tokens << ::Rdown::Tokens::Class.new(
         pointer: pointer,
-        type: :class,
-      }
+      )
     end
 
     def consume_code
       pointer = scanner.pointer
       scanner.pointer += '  '.bytesize
       content = scan(/.+$/)
-      tokens << {
+      tokens << ::Rdown::Tokens::Code.new(
         content: content,
         pointer: pointer,
-        type: :code,
-      }
+      )
     end
 
     def consume_keyword
       pointer = scanner.pointer
       scanner.pointer += '@'.bytesize
       content = scan(/\w+/)
-      tokens << {
+      tokens << ::Rdown::Tokens::Keyword.new(
         content: content,
         pointer: pointer,
-        type: :keyword,
-      }
+      )
     end
 
     def consume_less_than
       pointer = scanner.pointer
       scanner.pointer += '<'.bytesize
-      tokens << {
+      tokens << ::Rdown::Tokens::LessThan.new(
         pointer: pointer,
-        type: :less_than,
-      }
+      )
     end
 
     def consume_line_beginning_equal
       pointer = scanner.pointer
       scanner.pointer += '='.bytesize
-      tokens << {
+      tokens << ::Rdown::Tokens::LineBeginningEqual.new(
         pointer: pointer,
-        type: :line_beginning_equal,
-      }
+      )
     end
 
     def consume_line_break
       pointer = scanner.pointer
       scanner.pointer += "\n".bytesize
-      tokens << {
+      tokens << ::Rdown::Tokens::LineBreak.new(
         pointer: pointer,
-        type: :line_break,
-      }
+      )
     end
 
     def consume_word
       pointer = scanner.pointer
       content = scan(/\S+/)
-      tokens << {
+      tokens << ::Rdown::Tokens::Word.new(
         content: content,
         pointer: pointer,
-        type: :word,
-      }
+      )
     end
 
     def match?(*args)
@@ -143,7 +136,7 @@ module Rdown
       scan(/ +/)
     end
 
-    # @return [Array<Hash>]
+    # @return [Array<Rdown::Tokens::Base>]
     def tokens
       @tokens ||= []
     end

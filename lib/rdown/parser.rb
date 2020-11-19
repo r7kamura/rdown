@@ -58,7 +58,7 @@ module Rdown
     end
 
     def parse_class
-      heading = parse_class_line
+      heading = parse_class_heading
       description = []
       until @tokens.empty?
         case
@@ -77,7 +77,7 @@ module Rdown
     end
 
     # @return [Hash]
-    def parse_class_line
+    def parse_class_heading
       consume(:line_beginning_equal)
       consume(:class)
       name = consume(:word)[:content]

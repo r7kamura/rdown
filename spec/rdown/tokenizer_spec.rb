@@ -21,16 +21,8 @@ RSpec.describe Rdown::Tokenizer do
               type: :line_beginning_equal,
             },
             {
-              pointer: 1,
-              type: :spaces,
-            },
-            {
               pointer: 2,
               type: :class,
-            },
-            {
-              pointer: 7,
-              type: :spaces,
             },
             {
               content: 'Array',
@@ -38,16 +30,8 @@ RSpec.describe Rdown::Tokenizer do
               type: :word,
             },
             {
-              pointer: 13,
-              type: :spaces,
-            },
-            {
               pointer: 14,
               type: :less_than,
-            },
-            {
-              pointer: 15,
-              type: :spaces,
             },
             {
               content: 'Object',
@@ -80,17 +64,9 @@ RSpec.describe Rdown::Tokenizer do
               type: :keyword,
             },
             {
-              pointer: 6,
-              type: :spaces,
-            },
-            {
               content: 'pattern',
               pointer: 7,
               type: :word,
-            },
-            {
-              pointer: 14,
-              type: :spaces,
             },
             {
               content: '検索するパターンです。',
@@ -107,17 +83,9 @@ RSpec.describe Rdown::Tokenizer do
               type: :keyword,
             },
             {
-              pointer: 55,
-              type: :spaces,
-            },
-            {
               content: 'pos',
               pointer: 56,
               type: :word,
-            },
-            {
-              pointer: 59,
-              type: :spaces,
             },
             {
               content: '検索を始めるインデックスです。',

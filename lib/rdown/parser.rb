@@ -92,14 +92,10 @@ module Rdown
     # @return [Hash]
     def parse_class_line
       consume(:line_beginning_equal)
-      skip_spaces
       consume(:class)
-      skip_spaces
       class_word_token = consume(:word)
-      skip_spaces
       if at?(:less_than)
         consume(:less_than)
-        skip_spaces
         parent_word_token = consume(:word)
       end
       consume(:line_break)
@@ -113,14 +109,14 @@ module Rdown
 
     # @return [Hash]
     def parse_description_line
-      description = +''
+      description = nil
       until at?(:line_break)
-        if at?(:word)
-          description << consume(:word)[:content]
-        else
-          consume(:spaces)
+        if description
           description << ' '
+        else
+          description = +''
         end
+        description << consume(:word)[:content]
       end
       consume(:line_break)
       {
@@ -131,10 +127,6 @@ module Rdown
 
     def parse_empty_line
       consume(:line_break)
-    end
-
-    def skip_spaces
-      consume_optional(:spaces)
     end
   end
 end

@@ -28,7 +28,7 @@ module Rdown
         when peek(1) == "\n"
           consume_line_break
         when peek(1) == ' '
-          consume_spaces
+          skip_spaces
         when peek(1) == '<'
           consume_less_than
         when match?(/\Aclass\b/)
@@ -89,15 +89,6 @@ module Rdown
       }
     end
 
-    def consume_spaces
-      pointer = scanner.pointer
-      scanner.scan(/ +/)
-      tokens << {
-        pointer: pointer,
-        type: :spaces,
-      }
-    end
-
     def consume_word
       pointer = scanner.pointer
       content = scanner.scan(/\S+/)
@@ -133,6 +124,11 @@ module Rdown
     # @return [StringScanner]
     def scanner
       @scanner ||= ::StringScanner.new(@source)
+    end
+
+    def skip_spaces
+      pointer = scanner.pointer
+      scanner.scan(/ +/)
     end
 
     # @return [Array<Hash>]

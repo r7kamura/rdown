@@ -100,5 +100,36 @@ RSpec.describe Rdown::Tokenizer do
         )
       end
     end
+
+    context 'with code block' do
+      let(:source) do
+        <<~RD
+          一般的には配列は配列式を使って
+
+            [1, 2, 3]
+
+          のように生成します。
+        RD
+      end
+
+      it 'returns expected tokens' do
+        is_expected.to match(
+          [
+            a_hash_including(type: :word),
+            a_hash_including(type: :line_break),
+            a_hash_including(type: :line_break),
+            {
+              content: '[1, 2, 3]',
+              pointer: a_kind_of(Integer),
+              type: :code,
+            },
+            a_hash_including(type: :line_break),
+            a_hash_including(type: :line_break),
+            a_hash_including(type: :word),
+            a_hash_including(type: :line_break),
+          ]
+        )
+      end
+    end
   end
 end

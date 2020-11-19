@@ -57,33 +57,16 @@ module Rdown
       end
     end
 
-    # @param [Hash] node1
-    # @param [Hash] node2
-    # @return [Hash]
-    def merge_description_nodes(node1, node2)
-      node1[:content] = [
-        node1[:content],
-        node2[:content],
-      ].join(' ')
-      node1
-    end
-
     def parse_class
       node = parse_class_line
-      previous_line_is_description_line = false
       until @tokens.empty?
-        if at?(:line_break)
-          parse_empty_line
-          previous_line_is_description_line = false
+        case
+        when at?(:code)
+          node[:descriptions] << parse_code_block
+        when at?(:word)
+          node[:descriptions] << parse_paragraph
         else
-          node[:descriptions] << begin
-            if previous_line_is_description_line
-              merge_description_nodes(node[:descriptions].pop, parse_description_line)
-            else
-              parse_description_line
-            end
-          end
-          previous_line_is_description_line = true
+          consume(:line_break)
         end
       end
       node
@@ -108,25 +91,37 @@ module Rdown
     end
 
     # @return [Hash]
-    def parse_description_line
-      description = nil
-      until at?(:line_break)
-        if description
-          description << ' '
-        else
-          description = +''
-        end
-        description << consume(:word)[:content]
+    def parse_code_block
+      lines = []
+      while at?(:code)
+        lines << consume(:code)[:content]
+        consume(:line_break)
       end
-      consume(:line_break)
       {
-        content: description,
+        content: lines.join("\n"),
+        type: :code_block,
+      }
+    end
+
+    # @return [Hash]
+    def parse_paragraph
+      content = parse_words
+      consume(:line_break)
+      while at?(:word)
+        content += " #{parse_words}"
+        consume(:line_break)
+      end
+      {
+        content: content,
         type: :description,
       }
     end
 
-    def parse_empty_line
-      consume(:line_break)
+    # @return [String]
+    def parse_words
+      words = []
+      words << consume(:word)[:content] while at?(:word)
+      words.join(' ')
     end
   end
 end

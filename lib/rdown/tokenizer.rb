@@ -25,6 +25,8 @@ module Rdown
           consume_line_beginning_equal
         when on_beginning_of_line? && peek(1) == '@'
           consume_keyword
+        when on_beginning_of_line? && peek(2) == '  '
+          consume_code
         when peek(1) == "\n"
           consume_line_break
         when peek(1) == ' '
@@ -51,10 +53,21 @@ module Rdown
       }
     end
 
+    def consume_code
+      pointer = scanner.pointer
+      scanner.pointer += '  '.bytesize
+      content = scan(/.+$/)
+      tokens << {
+        content: content,
+        pointer: pointer,
+        type: :code,
+      }
+    end
+
     def consume_keyword
       pointer = scanner.pointer
       scanner.pointer += '@'.bytesize
-      content = scanner.scan(/\w+/)
+      content = scan(/\w+/)
       tokens << {
         content: content,
         pointer: pointer,
@@ -91,7 +104,7 @@ module Rdown
 
     def consume_word
       pointer = scanner.pointer
-      content = scanner.scan(/\S+/)
+      content = scan(/\S+/)
       tokens << {
         content: content,
         pointer: pointer,
@@ -127,8 +140,7 @@ module Rdown
     end
 
     def skip_spaces
-      pointer = scanner.pointer
-      scanner.scan(/ +/)
+      scan(/ +/)
     end
 
     # @return [Array<Hash>]

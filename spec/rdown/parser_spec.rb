@@ -22,40 +22,6 @@ RSpec.describe Rdown::Parser do
       end
     end
 
-    context 'with no inheritance class line' do
-      let(:source) do
-        <<~RD
-          = class Array
-        RD
-      end
-
-      it 'returns expected node' do
-        is_expected.to eq(
-          descriptions: [],
-          name: 'Array',
-          parent_name: nil,
-          type: :class
-        )
-      end
-    end
-
-    context 'with inheritance class line' do
-      let(:source) do
-        <<~RD
-          = class Array < Object
-        RD
-      end
-
-      it 'returns expected node' do
-        is_expected.to eq(
-          descriptions: [],
-          name: 'Array',
-          parent_name: 'Object',
-          type: :class
-        )
-      end
-    end
-
     context 'with class description' do
       let(:source) do
         <<~RD
@@ -63,6 +29,12 @@ RSpec.describe Rdown::Parser do
 
           配列クラスです。
           配列は任意の Ruby オブジェクトを要素として持つことができます。
+
+          一般的には配列は配列式を使って
+
+            [1, 2, 3]
+
+          のように生成します。
         RD
       end
 
@@ -71,6 +43,18 @@ RSpec.describe Rdown::Parser do
           descriptions: [
             {
               content: '配列クラスです。 配列は任意の Ruby オブジェクトを要素として持つことができます。',
+              type: :description,
+            },
+            {
+              content: '一般的には配列は配列式を使って',
+              type: :description,
+            },
+            {
+              content: '[1, 2, 3]',
+              type: :code_block,
+            },
+            {
+              content: 'のように生成します。',
               type: :description,
             },
           ],

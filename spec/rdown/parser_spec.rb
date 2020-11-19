@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'active_support/core_ext/hash/keys'
+require 'active_support/core_ext/object/json'
+
 RSpec.describe Rdown::Parser do
   describe '.class' do
     subject do
@@ -39,28 +42,31 @@ RSpec.describe Rdown::Parser do
       end
 
       it 'return expected node' do
-        is_expected.to eq(
-          descriptions: [
+        expect(subject.as_json.deep_symbolize_keys).to eq(
+          description: [
             {
               content: '配列クラスです。 配列は任意の Ruby オブジェクトを要素として持つことができます。',
-              type: :description,
+              type: 'Paragraph',
             },
             {
               content: '一般的には配列は配列式を使って',
-              type: :description,
+              type: 'Paragraph',
             },
             {
               content: '[1, 2, 3]',
-              type: :code_block,
+              type: 'CodeBlock',
             },
             {
               content: 'のように生成します。',
-              type: :description,
+              type: 'Paragraph',
             },
           ],
-          name: 'Array',
-          parent_name: 'Object',
-          type: :class
+          heading: {
+            name: 'Array',
+            parent_name: 'Object',
+            type: 'ClassHeading',
+          },
+          type: 'Class',
         )
       end
     end

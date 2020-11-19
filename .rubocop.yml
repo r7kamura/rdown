@@ -11,6 +11,9 @@ Style/Documentation:
 Style/EmptyCaseCondition:
   Enabled: false
 
+Style/TrailingCommaInArguments:
+  Enabled: false
+
 Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: consistent_comma
 

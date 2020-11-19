@@ -55,6 +55,15 @@ module Rdown
 
     def parse_class
       heading = parse_class_heading
+      description = parse_description
+      ::Rdown::Nodes::Class.new(
+        description: description,
+        heading: heading,
+      )
+    end
+
+    # @return [Array<Rdown::Nodes::Base>]
+    def parse_description
       description = []
       until @tokens.empty?
         case
@@ -66,10 +75,7 @@ module Rdown
           consume(:line_break)
         end
       end
-      ::Rdown::Nodes::Class.new(
-        description: description,
-        heading: heading,
-      )
+      description
     end
 
     # @return [Rdown::Nodes::ClassHeading]

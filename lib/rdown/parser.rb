@@ -57,13 +57,33 @@ module Rdown
       end
     end
 
+    # @param [Hash] node1
+    # @param [Hash] node2
+    # @return [Hash]
+    def merge_description_nodes(node1, node2)
+      node1[:content] = [
+        node1[:content],
+        node2[:content],
+      ].join(' ')
+      node1
+    end
+
     def parse_class
       node = parse_class_line
+      previous_line_is_description_line = false
       until @tokens.empty?
         if at?(:line_break)
           parse_empty_line
+          previous_line_is_description_line = false
         else
-          node[:descriptions] << parse_description_line
+          node[:descriptions] << begin
+            if previous_line_is_description_line
+              merge_description_nodes(node[:descriptions].pop, parse_description_line)
+            else
+              parse_description_line
+            end
+          end
+          previous_line_is_description_line = true
         end
       end
       node

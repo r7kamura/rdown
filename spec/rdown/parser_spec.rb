@@ -70,11 +70,7 @@ RSpec.describe Rdown::Parser do
         is_expected.to eq(
           descriptions: [
             {
-              content: '配列クラスです。',
-              type: :description,
-            },
-            {
-              content: '配列は任意の Ruby オブジェクトを要素として持つことができます。',
+              content: '配列クラスです。 配列は任意の Ruby オブジェクトを要素として持つことができます。',
               type: :description,
             },
           ],

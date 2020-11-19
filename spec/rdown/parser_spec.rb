@@ -31,6 +31,7 @@ RSpec.describe Rdown::Parser do
 
       it 'returns expected node' do
         is_expected.to eq(
+          descriptions: [],
           name: 'Array',
           parent_name: nil,
           type: :class
@@ -47,6 +48,36 @@ RSpec.describe Rdown::Parser do
 
       it 'returns expected node' do
         is_expected.to eq(
+          descriptions: [],
+          name: 'Array',
+          parent_name: 'Object',
+          type: :class
+        )
+      end
+    end
+
+    context 'with class description' do
+      let(:source) do
+        <<~RD
+          = class Array < Object
+
+          配列クラスです。
+          配列は任意の Ruby オブジェクトを要素として持つことができます。
+        RD
+      end
+
+      it 'return expected node' do
+        is_expected.to eq(
+          descriptions: [
+            {
+              content: '配列クラスです。',
+              type: :description,
+            },
+            {
+              content: '配列は任意の Ruby オブジェクトを要素として持つことができます。',
+              type: :description,
+            },
+          ],
           name: 'Array',
           parent_name: 'Object',
           type: :class

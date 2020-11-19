@@ -16,7 +16,7 @@ module Rdown
     end
 
     def call
-      parse_class_line
+      parse_class
     end
 
     private
@@ -57,6 +57,18 @@ module Rdown
       end
     end
 
+    def parse_class
+      node = parse_class_line
+      until @tokens.empty?
+        if at?(:line_break)
+          parse_empty_line
+        else
+          node[:descriptions] << parse_description_line
+        end
+      end
+      node
+    end
+
     # @return [Hash]
     def parse_class_line
       consume(:line_beginning_equal)
@@ -72,10 +84,33 @@ module Rdown
       end
       consume(:line_break)
       {
+        descriptions: [],
         name: class_word_token[:content],
         parent_name: parent_word_token ? parent_word_token[:content] : nil,
         type: :class,
       }
+    end
+
+    # @return [Hash]
+    def parse_description_line
+      description = +''
+      until at?(:line_break)
+        if at?(:word)
+          description << consume(:word)[:content]
+        else
+          consume(:spaces)
+          description << ' '
+        end
+      end
+      consume(:line_break)
+      {
+        content: description,
+        type: :description,
+      }
+    end
+
+    def parse_empty_line
+      consume(:line_break)
     end
 
     def skip_spaces

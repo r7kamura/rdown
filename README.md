@@ -1,5 +1,7 @@
 # Rdown
 
+[![](https://github.com/r7kamura/rdown/workflows/test/badge.svg)](https://github.com/r7kamura/rdown/actions?query=workflow%3Atest)
+
 Parser for Ruby Reference Manual.
 
 ## Installation

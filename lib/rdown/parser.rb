@@ -58,36 +58,38 @@ module Rdown
     end
 
     def parse_class
-      node = parse_class_line
+      heading = parse_class_line
+      description = []
       until @tokens.empty?
         case
         when at?(:code)
-          node[:descriptions] << parse_code_block
+          description << parse_code_block
         when at?(:word)
-          node[:descriptions] << parse_paragraph
+          description << parse_paragraph
         else
           consume(:line_break)
         end
       end
-      node
+      ::Rdown::Nodes::Class.new(
+        description: description,
+        heading: heading,
+      )
     end
 
     # @return [Hash]
     def parse_class_line
       consume(:line_beginning_equal)
       consume(:class)
-      class_word_token = consume(:word)
+      name = consume(:word)[:content]
       if at?(:less_than)
         consume(:less_than)
-        parent_word_token = consume(:word)
+        parent_name = consume(:word)[:content]
       end
       consume(:line_break)
-      {
-        descriptions: [],
-        name: class_word_token[:content],
-        parent_name: parent_word_token ? parent_word_token[:content] : nil,
-        type: :class,
-      }
+      ::Rdown::Nodes::ClassHeading.new(
+        name: name,
+        parent_name: parent_name,
+      )
     end
 
     # @return [Hash]
@@ -97,10 +99,9 @@ module Rdown
         lines << consume(:code)[:content]
         consume(:line_break)
       end
-      {
+      ::Rdown::Nodes::CodeBlock.new(
         content: lines.join("\n"),
-        type: :code_block,
-      }
+      )
     end
 
     # @return [Hash]
@@ -111,10 +112,9 @@ module Rdown
         content += " #{parse_words}"
         consume(:line_break)
       end
-      {
+      ::Rdown::Nodes::Paragraph.new(
         content: content,
-        type: :description,
-      }
+      )
     end
 
     # @return [String]

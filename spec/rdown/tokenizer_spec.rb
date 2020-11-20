@@ -134,5 +134,72 @@ RSpec.describe Rdown::Tokenizer do
         )
       end
     end
+
+    context 'with heading level 2' do
+      let(:source) do
+        <<~RD
+          == Class Methods
+        RD
+      end
+
+      it 'returns expected tokens' do
+        is_expected.to match(
+          [
+            a_hash_including(type: 'LineBeginningDoubleEqual'),
+            a_hash_including(type: 'ClassMethods'),
+            a_hash_including(type: 'LineBreak'),
+          ]
+        )
+      end
+    end
+
+    context 'with [] method' do
+      let(:source) do
+        <<~RD
+          --- [](key) -> Object
+        RD
+      end
+
+      it 'returns expected tokens' do
+        is_expected.to match(
+          [
+            a_hash_including(type: 'LineBeginningTripleHyphen'),
+            a_hash_including(type: 'BracketLeft'),
+            a_hash_including(type: 'BracketRight'),
+            a_hash_including(type: 'ParenthesisLeft'),
+            a_hash_including(type: 'Identifier'),
+            a_hash_including(type: 'ParenthesisRight'),
+            a_hash_including(type: 'ArrowRight'),
+            a_hash_including(type: 'Identifier'),
+            a_hash_including(type: 'LineBreak'),
+          ]
+        )
+      end
+    end
+
+    context 'with method line' do
+      let(:source) do
+        <<~RD
+          --- try_convert(obj) -> Array | nil
+        RD
+      end
+
+      it 'returns expected tokens' do
+        is_expected.to match(
+          [
+            a_hash_including(type: 'LineBeginningTripleHyphen'),
+            a_hash_including(type: 'Identifier'),
+            a_hash_including(type: 'ParenthesisLeft'),
+            a_hash_including(type: 'Identifier'),
+            a_hash_including(type: 'ParenthesisRight'),
+            a_hash_including(type: 'ArrowRight'),
+            a_hash_including(type: 'Identifier'),
+            a_hash_including(type: 'Pipe'),
+            a_hash_including(type: 'Identifier'),
+            a_hash_including(type: 'LineBreak'),
+          ]
+        )
+      end
+    end
   end
 end

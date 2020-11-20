@@ -43,6 +43,7 @@ RSpec.describe Rdown::Parser do
 
       it 'returns expected node' do
         is_expected.to eq(
+          class_methods: [],
           description: [
             {
               content: '配列クラスです。 配列は任意の Ruby オブジェクトを要素として持つことができます。',
@@ -61,6 +62,65 @@ RSpec.describe Rdown::Parser do
               type: 'Paragraph',
             },
           ],
+          heading: {
+            name: 'Array',
+            parent_name: 'Object',
+            type: 'ClassHeading',
+          },
+          type: 'Class',
+        )
+      end
+    end
+
+    context 'with class methods' do
+      let(:source) do
+        <<~RD
+          = class Array < Object
+
+          == Class Methods
+
+          --- try_convert(obj) -> Array | nil
+
+          to_ary メソッドを用いて obj を配列に変換しようとします。
+
+          何らかの理由で変換できないときには nil を返します。
+          このメソッドは引数が配列であるかどうかを調べるために使えます。
+
+          --- [](*item)    -> Array
+
+          引数 item を要素として持つ配列を生成して返します。
+        RD
+      end
+
+      it 'returns expected node' do
+        is_expected.to eq(
+          class_methods: [
+            {
+              description: [
+                {
+                  content: 'to_ary メソッドを用いて obj を配列に変換しようとします。',
+                  type: 'Paragraph',
+                },
+                {
+                  content: '何らかの理由で変換できないときには nil を返します。 このメソッドは引数が配列であるかどうかを調べるために使えます。',
+                  type: 'Paragraph',
+                },
+              ],
+              name: 'try_convert',
+              type: 'Method',
+            },
+            {
+              description: [
+                {
+                  content: '引数 item を要素として持つ配列を生成して返します。',
+                  type: 'Paragraph',
+                },
+              ],
+              name: '[]',
+              type: 'Method',
+            },
+          ],
+          description: [],
           heading: {
             name: 'Array',
             parent_name: 'Object',

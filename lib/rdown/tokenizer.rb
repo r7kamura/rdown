@@ -21,6 +21,10 @@ module Rdown
     def call
       until on_eos?
         case
+        when on_beginning_of_line? && peek(3) == '---'
+          tokenize_method_signature
+        when on_beginning_of_line? && peek(2) == '=='
+          consume_line_beginning_double_equal
         when on_beginning_of_line? && peek(1) == '='
           consume_line_beginning_equal
         when on_beginning_of_line? && peek(1) == '@'
@@ -33,16 +37,52 @@ module Rdown
           skip_spaces
         when peek(1) == '<'
           consume_less_than
+        when match?(/\AClass Methods\b/)
+          consume_class_methods
         when match?(/\Aclass\b/)
           consume_class
-        else
+        when match?(/\A\S/)
           consume_word
+        else
+          raise
         end
       end
       tokens
     end
 
     private
+
+    def consume_arrow_right
+      pointer = scanner.pointer
+      scanner.pointer += '->'.bytesize
+      tokens << ::Rdown::Tokens::ArrowRight.new(
+        pointer: pointer,
+      )
+    end
+
+    def consume_asterisk
+      pointer = scanner.pointer
+      scanner.pointer += '*'.bytesize
+      tokens << ::Rdown::Tokens::Asterisk.new(
+        pointer: pointer,
+      )
+    end
+
+    def consume_bracket_left
+      pointer = scanner.pointer
+      scanner.pointer += '['.bytesize
+      tokens << ::Rdown::Tokens::BracketLeft.new(
+        pointer: pointer,
+      )
+    end
+
+    def consume_bracket_right
+      pointer = scanner.pointer
+      scanner.pointer += ']'.bytesize
+      tokens << ::Rdown::Tokens::BracketRight.new(
+        pointer: pointer,
+      )
+    end
 
     def consume_class
       pointer = scanner.pointer
@@ -52,11 +92,28 @@ module Rdown
       )
     end
 
+    def consume_class_methods
+      pointer = scanner.pointer
+      scanner.pointer += 'Class Methods'.bytesize
+      tokens << ::Rdown::Tokens::ClassMethods.new(
+        pointer: pointer,
+      )
+    end
+
     def consume_code
       pointer = scanner.pointer
       scanner.pointer += '  '.bytesize
       content = scan(/.+$/)
       tokens << ::Rdown::Tokens::Code.new(
+        content: content,
+        pointer: pointer,
+      )
+    end
+
+    def consume_identifier
+      pointer = scanner.pointer
+      content = scan(/\w+/)
+      tokens << ::Rdown::Tokens::Identifier.new(
         content: content,
         pointer: pointer,
       )
@@ -80,6 +137,22 @@ module Rdown
       )
     end
 
+    def consume_line_beginning_double_equal
+      pointer = scanner.pointer
+      scanner.pointer += '=='.bytesize
+      tokens << ::Rdown::Tokens::LineBeginningDoubleEqual.new(
+        pointer: pointer,
+      )
+    end
+
+    def consume_line_beginning_triple_hyphen
+      pointer = scanner.pointer
+      scanner.pointer += '---'.bytesize
+      tokens << ::Rdown::Tokens::LineBeginningTripleHyphen.new(
+        pointer: pointer,
+      )
+    end
+
     def consume_line_beginning_equal
       pointer = scanner.pointer
       scanner.pointer += '='.bytesize
@@ -92,6 +165,30 @@ module Rdown
       pointer = scanner.pointer
       scanner.pointer += "\n".bytesize
       tokens << ::Rdown::Tokens::LineBreak.new(
+        pointer: pointer,
+      )
+    end
+
+    def consume_parenthesis_left
+      pointer = scanner.pointer
+      scanner.pointer += '('.bytesize
+      tokens << ::Rdown::Tokens::ParenthesisLeft.new(
+        pointer: pointer,
+      )
+    end
+
+    def consume_parenthesis_right
+      pointer = scanner.pointer
+      scanner.pointer += ')'.bytesize
+      tokens << ::Rdown::Tokens::ParenthesisRight.new(
+        pointer: pointer,
+      )
+    end
+
+    def consume_pipe
+      pointer = scanner.pointer
+      scanner.pointer += '|'.bytesize
+      tokens << ::Rdown::Tokens::Pipe.new(
         pointer: pointer,
       )
     end
@@ -134,6 +231,41 @@ module Rdown
 
     def skip_spaces
       scan(/ +/)
+    end
+
+    def tokenize_method_signature
+      until peek(1) == "\n"
+        case
+        when on_beginning_of_line? && peek(3) == '---'
+          consume_line_beginning_triple_hyphen
+        when peek(1) == ' '
+          skip_spaces
+        when peek(1) == '*'
+          consume_asterisk
+        when peek(1) == '{'
+          consume_brace_left
+        when peek(1) == '}'
+          consume_brace_right
+        when peek(1) == '['
+          consume_bracket_left
+        when peek(1) == ']'
+          consume_bracket_right
+        when peek(1) == '('
+          consume_parenthesis_left
+        when peek(1) == ')'
+          consume_parenthesis_right
+        when peek(1) == ','
+          consume_comma
+        when peek(1) == '|'
+          consume_pipe
+        when peek(3) == '...'
+          consume_triple_dot
+        when peek(2) == '->'
+          consume_arrow_right
+        else
+          consume_identifier
+        end
+      end
     end
 
     # @return [Array<Rdown::Tokens::Base>]

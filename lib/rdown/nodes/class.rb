@@ -12,18 +12,24 @@ module Rdown
       # @return [Rdown::Nodes::ClassHeading]
       attr_reader :heading
 
+      # @return [Array<Rdown::Nodes::Base>]
+      attr_reader :instance_methods
+
       # @param [Array<Rdown::Nodes::Base>] class_methods
       # @param [Array<Rdown::Nodes::Base>] description
       # @param [Rdown::Nodes::ClassHeading] heading
+      # @param [Array<Rdown::Nodes::Base>] instance_methods
       def initialize(
         class_methods:,
         description:,
-        heading:
+        heading:,
+        instance_methods:
       )
         super()
         @class_methods = class_methods
         @description = description
         @heading = heading
+        @instance_methods = instance_methods
       end
     end
   end

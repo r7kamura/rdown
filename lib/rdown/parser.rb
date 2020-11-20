@@ -25,7 +25,12 @@ module Rdown
     # @param [String] type
     # @return [Boolean]
     def at?(type)
-      !@tokens.empty? && @tokens.first.type == type
+      !at_end_of_tokens? && @tokens.first.type == type
+    end
+
+    # @return [Boolean]
+    def at_end_of_tokens?
+      @tokens.empty?
     end
 
     # @param [String] type
@@ -56,26 +61,18 @@ module Rdown
     def parse_class
       heading = parse_class_heading
       description = parse_description
+      class_methods = begin
+        if at?('LineBeginningDoubleEqual')
+          parse_class_methods
+        else
+          []
+        end
+      end
       ::Rdown::Nodes::Class.new(
+        class_methods: class_methods,
         description: description,
         heading: heading,
       )
-    end
-
-    # @return [Array<Rdown::Nodes::Base>]
-    def parse_description
-      description = []
-      until @tokens.empty?
-        case
-        when at?('Code')
-          description << parse_code_block
-        when at?('Word')
-          description << parse_paragraph
-        else
-          consume('LineBreak')
-        end
-      end
-      description
     end
 
     # @return [Rdown::Nodes::ClassHeading]
@@ -94,6 +91,19 @@ module Rdown
       )
     end
 
+    # @return [Array<Rdown::Nodes::Base>]
+    def parse_class_methods
+      parse_class_methods_heading
+      skip_line_breaks
+      parse_methods
+    end
+
+    def parse_class_methods_heading
+      consume('LineBeginningDoubleEqual')
+      consume('ClassMethods')
+      consume('LineBreak')
+    end
+
     # @return [Rdown::Nodes::CodeBlock]
     def parse_code_block
       lines = []
@@ -104,6 +114,64 @@ module Rdown
       ::Rdown::Nodes::CodeBlock.new(
         content: lines.join("\n"),
       )
+    end
+
+    # @return [Array<Rdown::Nodes::Base>]
+    def parse_description
+      description = []
+      loop do
+        case
+        when at?('Code')
+          description << parse_code_block
+        when at?('Word')
+          description << parse_paragraph
+        when at?('LineBreak')
+          consume('LineBreak')
+        else
+          break
+        end
+      end
+      description
+    end
+
+    # @return [Rdown::Nodes::Method]
+    def parse_method
+      consume('LineBeginningTripleHyphen')
+      name = parse_method_name
+      skip until at?('LineBreak')
+      consume('LineBreak')
+      description = parse_description
+      ::Rdown::Nodes::Method.new(
+        description: description,
+        name: name,
+      )
+    end
+
+    # @return [String]
+    def parse_method_name
+      method_name = +''
+      loop do
+        case
+        when at?('Identifier')
+          method_name += consume('Identifier').content
+        when at?('BracketLeft')
+          skip
+          method_name += '['
+        when at?('BracketRight')
+          skip
+          method_name += ']'
+        else
+          break
+        end
+      end
+      method_name
+    end
+
+    # @return [Array<Rdown::Nodes::Base>]
+    def parse_methods
+      methods = []
+      methods << parse_method while at?('LineBeginningTripleHyphen')
+      methods
     end
 
     # @return [Rdown::Nodes::Paragraph]
@@ -123,6 +191,14 @@ module Rdown
       words = []
       words << consume('Word').content while at?('Word')
       words.join(' ')
+    end
+
+    def skip
+      @tokens.shift
+    end
+
+    def skip_line_breaks
+      skip while at?('LineBreak')
     end
   end
 end

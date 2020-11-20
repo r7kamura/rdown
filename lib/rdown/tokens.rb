@@ -11,6 +11,7 @@ module Rdown
     autoload :ClassMethods, 'rdown/tokens/class_methods'
     autoload :Code, 'rdown/tokens/code'
     autoload :Identifier, 'rdown/tokens/identifier'
+    autoload :InstanceMethods, 'rdown/tokens/instance_methods'
     autoload :Keyword, 'rdown/tokens/keyword'
     autoload :LessThan, 'rdown/tokens/less_than'
     autoload :LineBeginningEqual, 'rdown/tokens/line_beginning_equal'

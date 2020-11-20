@@ -135,7 +135,25 @@ RSpec.describe Rdown::Tokenizer do
       end
     end
 
-    context 'with heading level 2' do
+    context 'with instance methods' do
+      let(:source) do
+        <<~RD
+          == Instance Methods
+        RD
+      end
+
+      it 'returns expected tokens' do
+        is_expected.to match(
+          [
+            a_hash_including(type: 'LineBeginningDoubleEqual'),
+            a_hash_including(type: 'InstanceMethods'),
+            a_hash_including(type: 'LineBreak'),
+          ]
+        )
+      end
+    end
+
+    context 'with class methods' do
       let(:source) do
         <<~RD
           == Class Methods

@@ -61,17 +61,13 @@ module Rdown
     def parse_class
       heading = parse_class_heading
       description = parse_description
-      class_methods = begin
-        if at?('LineBeginningDoubleEqual')
-          parse_class_methods
-        else
-          []
-        end
-      end
+      class_methods = parse_class_methods
+      instance_methods = parse_instance_methods
       ::Rdown::Nodes::Class.new(
         class_methods: class_methods,
         description: description,
         heading: heading,
+        instance_methods: instance_methods,
       )
     end
 
@@ -93,9 +89,13 @@ module Rdown
 
     # @return [Array<Rdown::Nodes::Base>]
     def parse_class_methods
-      parse_class_methods_heading
-      skip_line_breaks
-      parse_methods
+      if at?('LineBeginningDoubleEqual') && @tokens[1].type == 'ClassMethods'
+        parse_class_methods_heading
+        skip_line_breaks
+        parse_methods
+      else
+        []
+      end
     end
 
     def parse_class_methods_heading
@@ -132,6 +132,23 @@ module Rdown
         end
       end
       description
+    end
+
+    # @return [Array<Rdown::Nodes::Base>]
+    def parse_instance_methods
+      if at?('LineBeginningDoubleEqual') && @tokens[1].type == 'InstanceMethods'
+        parse_instance_methods_heading
+        skip_line_breaks
+        parse_methods
+      else
+        []
+      end
+    end
+
+    def parse_instance_methods_heading
+      consume('LineBeginningDoubleEqual')
+      consume('InstanceMethods')
+      consume('LineBreak')
     end
 
     # @return [Rdown::Nodes::Method]

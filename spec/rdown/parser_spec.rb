@@ -67,6 +67,52 @@ RSpec.describe Rdown::Parser do
             parent_name: 'Object',
             type: 'ClassHeading',
           },
+          instance_methods: [],
+          type: 'Class',
+        )
+      end
+    end
+
+    context 'with instance methods' do
+      let(:source) do
+        <<~RD
+          = class Array < Object
+
+          == Instance Methods
+
+          --- [](nth)    -> object | nil
+          --- at(nth)    -> object | nil
+
+          nth 番目の要素を返します。nth 番目の要素が存在しない時には nil を返します。
+        RD
+      end
+
+      it 'returns expected node' do
+        is_expected.to eq(
+          class_methods: [],
+          description: [],
+          heading: {
+            name: 'Array',
+            parent_name: 'Object',
+            type: 'ClassHeading',
+          },
+          instance_methods: [
+            {
+              description: [],
+              name: '[]',
+              type: 'Method',
+            },
+            {
+              description: [
+                {
+                  content: 'nth 番目の要素を返します。nth 番目の要素が存在しない時には nil を返します。',
+                  type: 'Paragraph',
+                },
+              ],
+              name: 'at',
+              type: 'Method',
+            },
+          ],
           type: 'Class',
         )
       end
@@ -126,6 +172,7 @@ RSpec.describe Rdown::Parser do
             parent_name: 'Object',
             type: 'ClassHeading',
           },
+          instance_methods: [],
           type: 'Class',
         )
       end

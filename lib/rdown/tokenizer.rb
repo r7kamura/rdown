@@ -39,6 +39,8 @@ module Rdown
           consume_less_than
         when match?(/\AClass Methods\b/)
           consume_class_methods
+        when match?(/\AInstance Methods\b/)
+          consume_instance_methods
         when match?(/\Aclass\b/)
           consume_class
         when match?(/\A\S/)
@@ -115,6 +117,14 @@ module Rdown
       content = scan(/\w+/)
       tokens << ::Rdown::Tokens::Identifier.new(
         content: content,
+        pointer: pointer,
+      )
+    end
+
+    def consume_instance_methods
+      pointer = scanner.pointer
+      scanner.pointer += 'Instance Methods'.bytesize
+      tokens << ::Rdown::Tokens::InstanceMethods.new(
         pointer: pointer,
       )
     end

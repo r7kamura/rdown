@@ -4,7 +4,7 @@ require 'active_support/core_ext/hash/keys'
 require 'active_support/core_ext/object/json'
 
 RSpec.describe Rdown::Parser do
-  describe '.class' do
+  describe '.call' do
     subject do
       described_class.call(tokens).as_json.deep_symbolize_keys
     end

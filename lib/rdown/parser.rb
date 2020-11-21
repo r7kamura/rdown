@@ -192,6 +192,7 @@ module Rdown
       )
     end
 
+    # @return [Arary<Rdown::Nodes::MethodSignature>]
     def parse_method_signatures
       method_signatures = []
       method_signatures << parse_method_signature

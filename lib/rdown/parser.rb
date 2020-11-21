@@ -106,14 +106,20 @@ module Rdown
 
     # @return [Rdown::Nodes::CodeBlock]
     def parse_code_block
+      content = parse_code_block_lines
+      ::Rdown::Nodes::CodeBlock.new(
+        content: content,
+      )
+    end
+
+    # @return [String]
+    def parse_code_block_lines
       lines = []
       while at?('Code')
         lines << consume('Code').content
         consume('LineBreak')
       end
-      ::Rdown::Nodes::CodeBlock.new(
-        content: lines.join("\n"),
-      )
+      lines.join("\n")
     end
 
     # @return [Array<Rdown::Nodes::Base>]

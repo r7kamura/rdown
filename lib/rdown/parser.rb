@@ -115,11 +115,18 @@ module Rdown
     # @return [String]
     def parse_code_block_lines
       lines = []
-      while at?('Code')
-        lines << consume('Code').content
+      loop do
+        case
+        when at?('Code')
+          lines << consume('Code').content
+        when at?('LineBreak')
+          lines << ''
+        else
+          break
+        end
         consume('LineBreak')
       end
-      lines.join("\n")
+      lines.join("\n").chomp
     end
 
     # @return [Array<Rdown::Nodes::Base>]

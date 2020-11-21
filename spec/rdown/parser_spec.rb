@@ -4,7 +4,7 @@ require 'active_support/core_ext/hash/keys'
 require 'active_support/core_ext/object/json'
 
 RSpec.describe Rdown::Parser do
-  describe '.class' do
+  describe '.call' do
     subject do
       described_class.call(tokens).as_json.deep_symbolize_keys
     end
@@ -199,6 +199,43 @@ RSpec.describe Rdown::Parser do
           },
           instance_methods: [],
           type: 'Class',
+        )
+      end
+    end
+
+    context 'with multi-line code blocks separated by empty line' do
+      let(:source) do
+        <<~RD
+          = class Array < Object
+
+          == Class Methods
+
+          --- try_convert(obj) -> Array | nil
+
+            Array.try_convert([1])   # => [1]
+            Array.try_convert("1")   # => nil
+
+            if tmp = Array.try_convert(arg)
+              # the argument is an array
+            elsif tmp = String.try_convert(arg)
+              # the argument is a string
+            end
+        RD
+      end
+
+      it 'returns expected node' do
+        is_expected.to match(
+          a_hash_including(
+            class_methods: [
+              a_hash_including(
+                description: [
+                  a_hash_including(
+                    type: 'CodeBlock',
+                  ),
+                ]
+              ),
+            ],
+          )
         )
       end
     end

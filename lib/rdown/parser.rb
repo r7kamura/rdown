@@ -155,8 +155,10 @@ module Rdown
     def parse_method
       method_signatures = parse_method_signatures
       description = parse_description
+      method_parameters = parse_method_parameters
       ::Rdown::Nodes::Method.new(
         description: description,
+        parameters: method_parameters,
         signatures: method_signatures,
       )
     end
@@ -179,6 +181,24 @@ module Rdown
         end
       end
       method_name
+    end
+
+    # @return [Rdown::Nodes::MethodParameter]
+    def parse_method_parameter
+      consume('AtParam')
+      name = consume('Identifier').content
+      description = parse_words
+      ::Rdown::Nodes::MethodParameter.new(
+        description: description,
+        name: name,
+      )
+    end
+
+    # @return [Array<Rdown::Nodes::MethodParameter>]
+    def parse_method_parameters
+      method_parameters = []
+      method_parameters << parse_method_parameter while at?('AtParam')
+      method_parameters
     end
 
     # @return [Rdown::Nodes::MethodSignature]

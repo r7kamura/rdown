@@ -62,14 +62,13 @@ RSpec.describe Rdown::Tokenizer do
         is_expected.to eq(
           [
             {
-              content: 'param',
               pointer: 0,
-              type: 'Keyword',
+              type: 'AtParam',
             },
             {
               content: 'pattern',
               pointer: 7,
-              type: 'Word',
+              type: 'Identifier',
             },
             {
               content: '検索するパターンです。',
@@ -81,14 +80,13 @@ RSpec.describe Rdown::Tokenizer do
               type: 'LineBreak',
             },
             {
-              content: 'param',
               pointer: 49,
-              type: 'Keyword',
+              type: 'AtParam',
             },
             {
               content: 'pos',
               pointer: 56,
-              type: 'Word',
+              type: 'Identifier',
             },
             {
               content: '検索を始めるインデックスです。',

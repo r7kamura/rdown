@@ -4,6 +4,7 @@ module Rdown
   module Tokens
     autoload :ArrowRight, 'rdown/tokens/arrow_right'
     autoload :Asterisk, 'rdown/tokens/asterisk'
+    autoload :AtParam, 'rdown/tokens/at_param'
     autoload :Base, 'rdown/tokens/base'
     autoload :BracketLeft, 'rdown/tokens/bracket_left'
     autoload :BracketRight, 'rdown/tokens/bracket_right'
@@ -12,7 +13,6 @@ module Rdown
     autoload :Code, 'rdown/tokens/code'
     autoload :Identifier, 'rdown/tokens/identifier'
     autoload :InstanceMethods, 'rdown/tokens/instance_methods'
-    autoload :Keyword, 'rdown/tokens/keyword'
     autoload :LessThan, 'rdown/tokens/less_than'
     autoload :LineBeginningEqual, 'rdown/tokens/line_beginning_equal'
     autoload :LineBeginningDoubleEqual, 'rdown/tokens/line_beginning_double_equal'

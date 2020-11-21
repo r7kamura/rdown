@@ -6,17 +6,23 @@ module Rdown
       # @return [Array<Rdown::Nodes::Base>]
       attr_reader :description
 
+      # @return [Array<Rdown::Nodes::MethodParameter>]
+      attr_reader :parameters
+
       # @return [Array<Rdown::Nodes::MethodSignature>]
       attr_reader :signatures
 
       # @param [Array<Rdown::Nodes::Base>] description
+      # @param [Array<Rdown::Nodes::MethodParameter>] parameters
       # @param [Array<Rdown::Nodes::Base>] signature
       def initialize(
         description:,
+        parameters:,
         signatures:
       )
         super()
         @description = description
+        @parameters = parameters
         @signatures = signatures
       end
     end

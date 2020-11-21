@@ -98,18 +98,22 @@ RSpec.describe Rdown::Parser do
           },
           instance_methods: [
             {
-              description: [],
-              name: '[]',
-              type: 'Method',
-            },
-            {
               description: [
                 {
                   content: 'nth 番目の要素を返します。nth 番目の要素が存在しない時には nil を返します。',
                   type: 'Paragraph',
                 },
               ],
-              name: 'at',
+              signatures: [
+                {
+                  name: '[]',
+                  type: 'MethodSignature',
+                },
+                {
+                  name: 'at',
+                  type: 'MethodSignature',
+                },
+              ],
               type: 'Method',
             },
           ],
@@ -152,7 +156,12 @@ RSpec.describe Rdown::Parser do
                   type: 'Paragraph',
                 },
               ],
-              name: 'try_convert',
+              signatures: [
+                {
+                  name: 'try_convert',
+                  type: 'MethodSignature',
+                },
+              ],
               type: 'Method',
             },
             {
@@ -162,7 +171,12 @@ RSpec.describe Rdown::Parser do
                   type: 'Paragraph',
                 },
               ],
-              name: '[]',
+              signatures: [
+                {
+                  name: '[]',
+                  type: 'MethodSignature',
+                },
+              ],
               type: 'Method',
             },
           ],

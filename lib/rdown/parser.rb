@@ -153,14 +153,11 @@ module Rdown
 
     # @return [Rdown::Nodes::Method]
     def parse_method
-      consume('LineBeginningTripleHyphen')
-      name = parse_method_name
-      skip until at?('LineBreak')
-      consume('LineBreak')
+      method_signatures = parse_method_signatures
       description = parse_description
       ::Rdown::Nodes::Method.new(
         description: description,
-        name: name,
+        signatures: method_signatures,
       )
     end
 
@@ -182,6 +179,24 @@ module Rdown
         end
       end
       method_name
+    end
+
+    # @return [Rdown::Nodes::MethodSignature]
+    def parse_method_signature
+      consume('LineBeginningTripleHyphen')
+      name = parse_method_name
+      skip until at?('LineBreak')
+      consume('LineBreak')
+      ::Rdown::Nodes::MethodSignature.new(
+        name: name,
+      )
+    end
+
+    def parse_method_signatures
+      method_signatures = []
+      method_signatures << parse_method_signature
+      method_signatures << parse_method_signature while at?('LineBeginningTripleHyphen')
+      method_signatures
     end
 
     # @return [Array<Rdown::Nodes::Base>]

@@ -58,6 +58,8 @@ module Rdown
           consume_line_beginning_double_equal
         when on_beginning_of_line? && peek(1) == '='
           consume_line_beginning_equal
+        when on_beginning_of_line? && peek(6) == '@raise'
+          tokenize_method_exception
         when on_beginning_of_line? && peek(6) == '@param'
           tokenize_method_parameter
         when on_beginning_of_line? && peek(5) == '#@end'
@@ -246,6 +248,14 @@ module Rdown
       )
     end
 
+    def consume_raise
+      pointer = scanner.pointer
+      scanner.pointer += '@raise'.bytesize
+      tokens << ::Rdown::Tokens::Raise.new(
+        pointer: pointer,
+      )
+    end
+
     def consume_since
       pointer = scanner.pointer
       scanner.pointer += '#@since'.bytesize
@@ -311,6 +321,12 @@ module Rdown
 
     def skip_spaces
       scan(/ +/)
+    end
+
+    def tokenize_method_exception
+      consume_raise
+      skip_spaces
+      consume_identifier
     end
 
     def tokenize_method_parameter

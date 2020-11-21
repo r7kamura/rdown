@@ -22,6 +22,7 @@ module Rdown
     autoload :ParenthesisLeft, 'rdown/tokens/parenthesis_left'
     autoload :ParenthesisRight, 'rdown/tokens/parenthesis_right'
     autoload :Pipe, 'rdown/tokens/pipe'
+    autoload :Raise, 'rdown/tokens/raise'
     autoload :Since, 'rdown/tokens/since'
     autoload :Until, 'rdown/tokens/until'
     autoload :Word, 'rdown/tokens/word'

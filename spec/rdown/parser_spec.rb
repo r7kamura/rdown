@@ -86,6 +86,9 @@ RSpec.describe Rdown::Parser do
           nth 番目の要素を返します。nth 番目の要素が存在しない時には nil を返します。
 
           @param item 配列の要素を指定します。
+
+          @raise TypeError 引数に整数以外の(暗黙の型変換が行えない)オブジェクトを
+                           指定した場合に発生します。
         RD
       end
 
@@ -106,6 +109,7 @@ RSpec.describe Rdown::Parser do
                   type: 'Paragraph',
                 },
               ],
+              exceptions: [],
               parameters: [
                 {
                   description: '配列の要素を指定します。',
@@ -171,6 +175,7 @@ RSpec.describe Rdown::Parser do
                   type: 'Paragraph',
                 },
               ],
+              exceptions: [],
               parameters: [],
               signatures: [
                 {
@@ -189,6 +194,7 @@ RSpec.describe Rdown::Parser do
                   type: 'Paragraph',
                 },
               ],
+              exceptions: [],
               parameters: [],
               signatures: [
                 {

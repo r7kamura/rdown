@@ -50,7 +50,28 @@ RSpec.describe Rdown::Tokenizer do
       end
     end
 
-    context 'with parameter lines' do
+    context 'with @raise' do
+      let(:source) do
+        <<~RD
+          @raise TypeError 引数に整数以外の(暗黙の型変換が行えない)オブジェクトを
+                 指定した場合に発生します。
+        RD
+      end
+
+      it 'returns expected tokens' do
+        is_expected.to match(
+          [
+            a_hash_including(type: 'Raise'),
+            a_hash_including(type: 'Identifier'),
+            a_hash_including(type: 'Word'),
+            a_hash_including(type: 'LineBreak'),
+            a_hash_including(type: 'Word'),
+          ]
+        )
+      end
+    end
+
+    context 'with @param' do
       let(:source) do
         <<~RD
           @param pattern 検索するパターンです。

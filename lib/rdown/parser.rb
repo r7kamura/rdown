@@ -171,13 +171,33 @@ module Rdown
       method_signatures = parse_method_signatures
       description = parse_description
       method_parameters = parse_method_parameters
+      method_exceptions = parse_method_exceptions
       ::Rdown::Nodes::Method.new(
         description: description,
+        exceptions: method_exceptions,
         parameters: method_parameters,
         signatures: method_signatures,
         version_since: @version_since,
         version_until: @version_until,
       )
+    end
+
+    # @return [Rdown::Nodes::MethodException]
+    def parse_method_exception
+      consume('Param')
+      name = consume('Identifier').content
+      description = parse_words
+      ::Rdown::Nodes::MethodException.new(
+        description: description,
+        name: name,
+      )
+    end
+
+    # @return [Array<Rdown::Nodes::MethodException>]
+    def parse_method_exceptions
+      method_exceptions = []
+      method_exceptions << parse_method_exception while at?('Raise')
+      method_exceptions
     end
 
     # @return [String]

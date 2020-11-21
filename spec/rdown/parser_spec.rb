@@ -84,6 +84,8 @@ RSpec.describe Rdown::Parser do
           --- at(nth)    -> object | nil
 
           nth 番目の要素を返します。nth 番目の要素が存在しない時には nil を返します。
+
+          @param item 配列の要素を指定します。
         RD
       end
 
@@ -102,6 +104,13 @@ RSpec.describe Rdown::Parser do
                 {
                   content: 'nth 番目の要素を返します。nth 番目の要素が存在しない時には nil を返します。',
                   type: 'Paragraph',
+                },
+              ],
+              parameters: [
+                {
+                  description: '配列の要素を指定します。',
+                  name: 'item',
+                  type: 'MethodParameter',
                 },
               ],
               signatures: [
@@ -156,6 +165,7 @@ RSpec.describe Rdown::Parser do
                   type: 'Paragraph',
                 },
               ],
+              parameters: [],
               signatures: [
                 {
                   name: 'try_convert',
@@ -171,6 +181,7 @@ RSpec.describe Rdown::Parser do
                   type: 'Paragraph',
                 },
               ],
+              parameters: [],
               signatures: [
                 {
                   name: '[]',

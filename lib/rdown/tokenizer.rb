@@ -58,8 +58,8 @@ module Rdown
           consume_line_beginning_double_equal
         when on_beginning_of_line? && peek(1) == '='
           consume_line_beginning_equal
-        when on_beginning_of_line? && peek(1) == '@'
-          consume_keyword
+        when on_beginning_of_line? && peek(6) == '@param'
+          tokenize_method_parameter
         when on_beginning_of_line? && peek(2) == '  '
           consume_code
         when peek(1) == "\n"
@@ -97,6 +97,14 @@ module Rdown
       pointer = scanner.pointer
       scanner.pointer += '*'.bytesize
       tokens << ::Rdown::Tokens::Asterisk.new(
+        pointer: pointer,
+      )
+    end
+
+    def consume_at_param
+      pointer = scanner.pointer
+      scanner.pointer += '@param'.bytesize
+      tokens << ::Rdown::Tokens::AtParam.new(
         pointer: pointer,
       )
     end
@@ -156,16 +164,6 @@ module Rdown
       pointer = scanner.pointer
       scanner.pointer += 'Instance Methods'.bytesize
       tokens << ::Rdown::Tokens::InstanceMethods.new(
-        pointer: pointer,
-      )
-    end
-
-    def consume_keyword
-      pointer = scanner.pointer
-      scanner.pointer += '@'.bytesize
-      content = scan(/\w+/)
-      tokens << ::Rdown::Tokens::Keyword.new(
-        content: content,
         pointer: pointer,
       )
     end
@@ -272,6 +270,12 @@ module Rdown
 
     def skip_spaces
       scan(/ +/)
+    end
+
+    def tokenize_method_parameter
+      consume_at_param
+      skip_spaces
+      consume_identifier
     end
 
     def tokenize_method_signature

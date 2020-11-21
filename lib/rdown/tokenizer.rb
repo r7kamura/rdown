@@ -4,7 +4,7 @@ require 'strscan'
 
 module Rdown
   class Tokenizer
-    METHOD_NAME_IDENTIFIER_PATTERN = /
+    METHOD_NAME_IDENTIFIER_PATTERN = %r{
       (?:
         (?!\d)(?:\w|[^[:ascii:]])+[!?=]?
           | -
@@ -15,7 +15,7 @@ module Rdown
           | \[\]=
           | \*
           | \*\*
-          | \/
+          | /
           | \+
           | \|
           | &
@@ -33,7 +33,7 @@ module Rdown
           | >>
           | ~
       )
-    /x
+    }x.freeze
 
     class << self
       # @param [String] source

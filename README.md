@@ -2,7 +2,7 @@
 
 [![](https://github.com/r7kamura/rdown/workflows/test/badge.svg)](https://github.com/r7kamura/rdown/actions?query=workflow%3Atest)
 
-Parser for Ruby Reference Manual.
+Parser for [Ruby Reference Manual](https://github.com/rurema/doctree).
 
 ## Installation
 

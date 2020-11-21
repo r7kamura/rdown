@@ -4,6 +4,37 @@ require 'strscan'
 
 module Rdown
   class Tokenizer
+    METHOD_NAME_IDENTIFIER_PATTERN = /
+      (?:
+        (?!\d)(?:\w|[^[:ascii:]])+[!?=]?
+          | -
+          | !
+          | !=
+          | !~
+          | \[\]
+          | \[\]=
+          | \*
+          | \*\*
+          | \/
+          | \+
+          | \|
+          | &
+          | %
+          | ^
+          | <
+          | <<
+          | <=
+          | <=>
+          | ==
+          | ===
+          | =>
+          | =~
+          | >
+          | >>
+          | ~
+      )
+    /x
+
     class << self
       # @param [String] source
       # @return [Array<Rdown::Tokens::Base>]
@@ -114,7 +145,7 @@ module Rdown
 
     def consume_identifier
       pointer = scanner.pointer
-      content = scan(/\w+/)
+      content = scan(METHOD_NAME_IDENTIFIER_PATTERN)
       tokens << ::Rdown::Tokens::Identifier.new(
         content: content,
         pointer: pointer,

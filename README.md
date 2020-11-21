@@ -22,7 +22,23 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'rdown'
+
+source = <<~RD
+= class Array < Object
+
+== Instance Methods
+
+--- [](nth)    -> object | nil
+--- at(nth)    -> object | nil
+
+nth 番目の要素を返します。nth 番目の要素が存在しない時には nil を返します。
+RD
+
+tokens = Rdown::Tokenizer.call(source)
+node = Rdown::Parser.call(tokens)
+```
 
 ## Development
 

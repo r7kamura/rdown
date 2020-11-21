@@ -11,6 +11,7 @@ module Rdown
     autoload :Class, 'rdown/tokens/class'
     autoload :ClassMethods, 'rdown/tokens/class_methods'
     autoload :Code, 'rdown/tokens/code'
+    autoload :End, 'rdown/tokens/end'
     autoload :Identifier, 'rdown/tokens/identifier'
     autoload :InstanceMethods, 'rdown/tokens/instance_methods'
     autoload :LessThan, 'rdown/tokens/less_than'
@@ -21,6 +22,8 @@ module Rdown
     autoload :ParenthesisLeft, 'rdown/tokens/parenthesis_left'
     autoload :ParenthesisRight, 'rdown/tokens/parenthesis_right'
     autoload :Pipe, 'rdown/tokens/pipe'
+    autoload :Since, 'rdown/tokens/since'
+    autoload :Until, 'rdown/tokens/until'
     autoload :Word, 'rdown/tokens/word'
   end
 end

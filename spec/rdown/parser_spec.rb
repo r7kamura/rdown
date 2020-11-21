@@ -124,6 +124,8 @@ RSpec.describe Rdown::Parser do
                 },
               ],
               type: 'Method',
+              version_since: nil,
+              version_until: nil,
             },
           ],
           type: 'Class',
@@ -133,10 +135,12 @@ RSpec.describe Rdown::Parser do
 
     context 'with class methods' do
       let(:source) do
-        <<~RD
+        <<~'RD'
           = class Array < Object
 
           == Class Methods
+
+          #@since 1.9.1
 
           --- try_convert(obj) -> Array | nil
 
@@ -144,6 +148,8 @@ RSpec.describe Rdown::Parser do
 
           何らかの理由で変換できないときには nil を返します。
           このメソッドは引数が配列であるかどうかを調べるために使えます。
+
+          #@end
 
           --- [](*item)    -> Array
 
@@ -173,6 +179,8 @@ RSpec.describe Rdown::Parser do
                 },
               ],
               type: 'Method',
+              version_since: '1.9.1',
+              version_until: nil,
             },
             {
               description: [
@@ -189,6 +197,8 @@ RSpec.describe Rdown::Parser do
                 },
               ],
               type: 'Method',
+              version_since: nil,
+              version_until: nil,
             },
           ],
           description: [],

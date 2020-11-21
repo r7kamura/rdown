@@ -217,5 +217,45 @@ RSpec.describe Rdown::Tokenizer do
         )
       end
     end
+
+    context 'with #@since' do
+      let(:source) do
+        <<~'RD'
+          #@since 1.9.1
+          #@end
+        RD
+      end
+
+      it 'returns expected tokens' do
+        is_expected.to match(
+          [
+            a_hash_including(type: 'Since', version: '1.9.1'),
+            a_hash_including(type: 'LineBreak'),
+            a_hash_including(type: 'End'),
+            a_hash_including(type: 'LineBreak'),
+          ]
+        )
+      end
+    end
+
+    context 'with #@until' do
+      let(:source) do
+        <<~'RD'
+          #@until 1.9.1
+          #@end
+        RD
+      end
+
+      it 'returns expected tokens' do
+        is_expected.to match(
+          [
+            a_hash_including(type: 'Until', version: '1.9.1'),
+            a_hash_including(type: 'LineBreak'),
+            a_hash_including(type: 'End'),
+            a_hash_including(type: 'LineBreak'),
+          ]
+        )
+      end
+    end
   end
 end

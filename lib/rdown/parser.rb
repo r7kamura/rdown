@@ -202,7 +202,7 @@ module Rdown
 
     # @return [Rdown::Nodes::MethodParameter]
     def parse_method_parameter
-      consume('AtParam')
+      consume('Param')
       name = consume('Identifier').content
       description = parse_words
       ::Rdown::Nodes::MethodParameter.new(
@@ -214,7 +214,7 @@ module Rdown
     # @return [Array<Rdown::Nodes::MethodParameter>]
     def parse_method_parameters
       method_parameters = []
-      method_parameters << parse_method_parameter while at?('AtParam')
+      method_parameters << parse_method_parameter while at?('Param')
       method_parameters
     end
 

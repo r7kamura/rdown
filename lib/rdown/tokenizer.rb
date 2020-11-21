@@ -107,14 +107,6 @@ module Rdown
       )
     end
 
-    def consume_at_param
-      pointer = scanner.pointer
-      scanner.pointer += '@param'.bytesize
-      tokens << ::Rdown::Tokens::AtParam.new(
-        pointer: pointer,
-      )
-    end
-
     def consume_bracket_left
       pointer = scanner.pointer
       scanner.pointer += '['.bytesize
@@ -222,6 +214,14 @@ module Rdown
       )
     end
 
+    def consume_param
+      pointer = scanner.pointer
+      scanner.pointer += '@param'.bytesize
+      tokens << ::Rdown::Tokens::Param.new(
+        pointer: pointer,
+      )
+    end
+
     def consume_parenthesis_left
       pointer = scanner.pointer
       scanner.pointer += '('.bytesize
@@ -314,7 +314,7 @@ module Rdown
     end
 
     def tokenize_method_parameter
-      consume_at_param
+      consume_param
       skip_spaces
       consume_identifier
     end

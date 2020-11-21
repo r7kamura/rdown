@@ -63,7 +63,7 @@ RSpec.describe Rdown::Tokenizer do
           [
             {
               pointer: 0,
-              type: 'AtParam',
+              type: 'Param',
             },
             {
               content: 'pattern',
@@ -81,7 +81,7 @@ RSpec.describe Rdown::Tokenizer do
             },
             {
               pointer: 49,
-              type: 'AtParam',
+              type: 'Param',
             },
             {
               content: 'pos',

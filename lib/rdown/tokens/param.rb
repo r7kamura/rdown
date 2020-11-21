@@ -2,7 +2,7 @@
 
 module Rdown
   module Tokens
-    class AtParam < ::Rdown::Tokens::Base
+    class Param < ::Rdown::Tokens::Base
     end
   end
 end

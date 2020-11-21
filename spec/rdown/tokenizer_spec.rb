@@ -53,8 +53,7 @@ RSpec.describe Rdown::Tokenizer do
     context 'with @raise' do
       let(:source) do
         <<~RD
-          @raise TypeError 引数に整数以外の(暗黙の型変換が行えない)オブジェクトを
-                 指定した場合に発生します。
+          @raise TypeError 引数に整数以外の(暗黙の型変換が行えない)オブジェクトを指定した場合に発生します。
         RD
       end
 
@@ -65,7 +64,6 @@ RSpec.describe Rdown::Tokenizer do
             a_hash_including(type: 'Identifier'),
             a_hash_including(type: 'Word'),
             a_hash_including(type: 'LineBreak'),
-            a_hash_including(type: 'Word'),
           ]
         )
       end

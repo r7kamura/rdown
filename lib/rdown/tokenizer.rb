@@ -37,13 +37,13 @@ module Rdown
           skip_spaces
         when peek(1) == '<'
           consume_less_than
-        when match?(/\AClass Methods\b/)
+        when match?(/Class Methods/)
           consume_class_methods
-        when match?(/\AInstance Methods\b/)
+        when match?(/Instance Methods/)
           consume_instance_methods
-        when match?(/\Aclass\b/)
+        when match?(/class/)
           consume_class
-        when match?(/\A\S/)
+        when match?(/\S/)
           consume_word
         else
           raise

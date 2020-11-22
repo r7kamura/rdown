@@ -9,8 +9,12 @@ RSpec.describe Rdown::Parser do
       described_class.call(tokens).as_json.deep_symbolize_keys
     end
 
+    let(:pre_processed_lines) do
+      Rdown::PreProcessor.call(source)
+    end
+
     let(:tokens) do
-      Rdown::Tokenizer.call(source)
+      Rdown::Tokenizer.call(pre_processed_lines)
     end
 
     context 'with class name less tokens' do
@@ -124,8 +128,6 @@ RSpec.describe Rdown::Parser do
                 },
               ],
               type: 'Method',
-              version_since: nil,
-              version_until: nil,
             },
           ],
           type: 'Class',
@@ -179,8 +181,6 @@ RSpec.describe Rdown::Parser do
                 },
               ],
               type: 'Method',
-              version_since: '1.9.1',
-              version_until: nil,
             },
             {
               description: [
@@ -197,8 +197,6 @@ RSpec.describe Rdown::Parser do
                 },
               ],
               type: 'Method',
-              version_since: nil,
-              version_until: nil,
             },
           ],
           description: [],

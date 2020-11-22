@@ -13,8 +13,6 @@ module Rdown
     # @param [Array<Hash>] tokens
     def initialize(tokens)
       @tokens = tokens
-      @version_since = nil
-      @version_until = nil
     end
 
     # @return [Rdown::Nodes::Class]
@@ -175,8 +173,6 @@ module Rdown
         description: description,
         parameters: method_parameters,
         signatures: method_signatures,
-        version_since: @version_since,
-        version_until: @version_until,
       )
     end
 
@@ -244,12 +240,6 @@ module Rdown
         case
         when at?('LineBeginningTripleHyphen')
           methods << parse_method
-        when at?('Since')
-          parse_version_since
-        when at?('Until')
-          parse_version_until
-        when at?('End')
-          parse_version_end
         when at?('LineBreak')
           skip
         else
@@ -269,20 +259,6 @@ module Rdown
       ::Rdown::Nodes::Paragraph.new(
         content: sections.join(' '),
       )
-    end
-
-    def parse_version_end
-      consume('End')
-      @version_since = nil
-      @version_until = nil
-    end
-
-    def parse_version_since
-      @version_since = consume('Since').version
-    end
-
-    def parse_version_until
-      @version_until = consume('Until').version
     end
 
     # @return [String]

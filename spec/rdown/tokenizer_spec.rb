@@ -6,7 +6,11 @@ require 'active_support/core_ext/object/json'
 RSpec.describe Rdown::Tokenizer do
   describe '.call' do
     subject do
-      described_class.call(source).as_json.map(&:deep_symbolize_keys)
+      described_class.call(pre_processed_lines).as_json.map(&:deep_symbolize_keys)
+    end
+
+    let(:pre_processed_lines) do
+      Rdown::PreProcessor.call(source)
     end
 
     context 'with class line' do
@@ -17,34 +21,28 @@ RSpec.describe Rdown::Tokenizer do
       end
 
       it 'returns expected tokens' do
-        is_expected.to eq(
+        is_expected.to match(
           [
-            {
-              pointer: 0,
+            hash_including(
               type: 'LineBeginningEqual',
-            },
-            {
-              pointer: 2,
+            ),
+            hash_including(
               type: 'Class',
-            },
-            {
+            ),
+            hash_including(
               content: 'Array',
-              pointer: 8,
               type: 'Word',
-            },
-            {
-              pointer: 14,
+            ),
+            hash_including(
               type: 'LessThan',
-            },
-            {
+            ),
+            hash_including(
               content: 'Object',
-              pointer: 16,
               type: 'Word',
-            },
-            {
-              pointer: 22,
+            ),
+            hash_including(
               type: 'LineBreak',
-            },
+            ),
           ]
         )
       end
@@ -59,44 +57,36 @@ RSpec.describe Rdown::Tokenizer do
       end
 
       it 'returns expected tokens' do
-        is_expected.to eq(
+        is_expected.to match(
           [
-            {
-              pointer: 0,
+            hash_including(
               type: 'Param',
-            },
-            {
+            ),
+            hash_including(
               content: 'pattern',
-              pointer: 7,
               type: 'Identifier',
-            },
-            {
+            ),
+            hash_including(
               content: '検索するパターンです。',
-              pointer: 15,
               type: 'Word',
-            },
-            {
-              pointer: 48,
+            ),
+            hash_including(
               type: 'LineBreak',
-            },
-            {
-              pointer: 49,
+            ),
+            hash_including(
               type: 'Param',
-            },
-            {
+            ),
+            hash_including(
               content: 'pos',
-              pointer: 56,
               type: 'Identifier',
-            },
-            {
+            ),
+            hash_including(
               content: '検索を始めるインデックスです。',
-              pointer: 60,
               type: 'Word',
-            },
-            {
-              pointer: 105,
+            ),
+            hash_including(
               type: 'LineBreak',
-            },
+            ),
           ]
         )
       end
@@ -116,18 +106,31 @@ RSpec.describe Rdown::Tokenizer do
       it 'returns expected tokens' do
         is_expected.to match(
           [
-            a_hash_including(type: 'Word'),
-            a_hash_including(type: 'LineBreak'),
-            a_hash_including(type: 'LineBreak'),
-            {
+            a_hash_including(
+              type: 'Word'
+            ),
+            a_hash_including(
+              type: 'LineBreak'
+            ),
+            a_hash_including(
+              type: 'LineBreak'
+            ),
+            a_hash_including(
               content: '[1, 2, 3]',
-              pointer: a_kind_of(Integer),
               type: 'Code',
-            },
-            a_hash_including(type: 'LineBreak'),
-            a_hash_including(type: 'LineBreak'),
-            a_hash_including(type: 'Word'),
-            a_hash_including(type: 'LineBreak'),
+            ),
+            a_hash_including(
+              type: 'LineBreak'
+            ),
+            a_hash_including(
+              type: 'LineBreak'
+            ),
+            a_hash_including(
+              type: 'Word'
+            ),
+            a_hash_including(
+              type: 'LineBreak'
+            ),
           ]
         )
       end
@@ -227,14 +230,7 @@ RSpec.describe Rdown::Tokenizer do
       end
 
       it 'returns expected tokens' do
-        is_expected.to match(
-          [
-            a_hash_including(type: 'Since', version: '1.9.1'),
-            a_hash_including(type: 'LineBreak'),
-            a_hash_including(type: 'End'),
-            a_hash_including(type: 'LineBreak'),
-          ]
-        )
+        is_expected.to eq([])
       end
     end
 
@@ -247,14 +243,7 @@ RSpec.describe Rdown::Tokenizer do
       end
 
       it 'returns expected tokens' do
-        is_expected.to match(
-          [
-            a_hash_including(type: 'Until', version: '1.9.1'),
-            a_hash_including(type: 'LineBreak'),
-            a_hash_including(type: 'End'),
-            a_hash_including(type: 'LineBreak'),
-          ]
-        )
+        is_expected.to eq([])
       end
     end
   end

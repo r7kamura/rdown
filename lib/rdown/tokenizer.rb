@@ -39,14 +39,14 @@ module Rdown
     }x.freeze
 
     class << self
-      # @param [String] source
+      # @param [Array<Rdown::PreProcessedLine>] source
       # @return [Array<Rdown::Tokens::Base>]
       def call(source)
         new(source).call
       end
     end
 
-    # @param [String] source
+    # @param [Array<Rdown::PreProcessedLine>] source
     def initialize(source)
       @source = source
     end
@@ -63,12 +63,6 @@ module Rdown
           consume_line_beginning_equal
         when on_beginning_of_line? && peek(6) == '@param'
           tokenize_method_parameter
-        when on_beginning_of_line? && peek(5) == '#@end'
-          consume_end
-        when on_beginning_of_line? && peek(7) == '#@since'
-          consume_since
-        when on_beginning_of_line? && peek(7) == '#@until'
-          consume_until
         when on_beginning_of_line? && peek(2) == '  '
           consume_code
         when peek(1) == "\n"
@@ -148,14 +142,6 @@ module Rdown
       content = scan(/.+$/)
       tokens << ::Rdown::Tokens::Code.new(
         content: content,
-        pointer: pointer,
-      )
-    end
-
-    def consume_end
-      pointer = scanner.pointer
-      scanner.pointer += '#@end'.bytesize
-      tokens << ::Rdown::Tokens::End.new(
         pointer: pointer,
       )
     end
@@ -249,28 +235,6 @@ module Rdown
       )
     end
 
-    def consume_since
-      pointer = scanner.pointer
-      scanner.pointer += '#@since'.bytesize
-      skip_spaces
-      version = scan_version
-      tokens << ::Rdown::Tokens::Since.new(
-        pointer: pointer,
-        version: version,
-      )
-    end
-
-    def consume_until
-      pointer = scanner.pointer
-      scanner.pointer += '#@until'.bytesize
-      skip_spaces
-      version = scan_version
-      tokens << ::Rdown::Tokens::Until.new(
-        pointer: pointer,
-        version: version,
-      )
-    end
-
     def consume_word
       pointer = scanner.pointer
       content = scan(/\S+/)
@@ -309,7 +273,11 @@ module Rdown
 
     # @return [StringScanner]
     def scanner
-      @scanner ||= ::StringScanner.new(@source)
+      if !@scanner || @scanner.eos?
+        @scanner = ::StringScanner.new(@source.shift&.content || '')
+      else
+        @scanner
+      end
     end
 
     def skip_spaces

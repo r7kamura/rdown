@@ -90,7 +90,7 @@ module Rdown
 
     def consume_arrow_right
       pointer = scanner.pointer
-      scanner.pointer += '->'.bytesize
+      scan('->')
       tokens << ::Rdown::Tokens::ArrowRight.new(
         pointer: pointer,
       )
@@ -98,7 +98,7 @@ module Rdown
 
     def consume_asterisk
       pointer = scanner.pointer
-      scanner.pointer += '*'.bytesize
+      scan('*')
       tokens << ::Rdown::Tokens::Asterisk.new(
         pointer: pointer,
       )
@@ -106,7 +106,7 @@ module Rdown
 
     def consume_bracket_left
       pointer = scanner.pointer
-      scanner.pointer += '['.bytesize
+      scan('[')
       tokens << ::Rdown::Tokens::BracketLeft.new(
         pointer: pointer,
       )
@@ -114,7 +114,7 @@ module Rdown
 
     def consume_bracket_right
       pointer = scanner.pointer
-      scanner.pointer += ']'.bytesize
+      scan(']')
       tokens << ::Rdown::Tokens::BracketRight.new(
         pointer: pointer,
       )
@@ -122,7 +122,7 @@ module Rdown
 
     def consume_class
       pointer = scanner.pointer
-      scanner.pointer += 'class'.bytesize
+      scan('class')
       tokens << ::Rdown::Tokens::Class.new(
         pointer: pointer,
       )
@@ -130,7 +130,7 @@ module Rdown
 
     def consume_class_methods
       pointer = scanner.pointer
-      scanner.pointer += 'Class Methods'.bytesize
+      scan('Class Methods')
       tokens << ::Rdown::Tokens::ClassMethods.new(
         pointer: pointer,
       )
@@ -138,10 +138,9 @@ module Rdown
 
     def consume_code
       pointer = scanner.pointer
-      scanner.pointer += '  '.bytesize
-      content = scan(/.+$/)
+      content = scan(/  .+$/)
       tokens << ::Rdown::Tokens::Code.new(
-        content: content,
+        content: content[2..-1],
         pointer: pointer,
       )
     end
@@ -157,7 +156,7 @@ module Rdown
 
     def consume_instance_methods
       pointer = scanner.pointer
-      scanner.pointer += 'Instance Methods'.bytesize
+      scan('Instance Methods')
       tokens << ::Rdown::Tokens::InstanceMethods.new(
         pointer: pointer,
       )
@@ -165,7 +164,7 @@ module Rdown
 
     def consume_less_than
       pointer = scanner.pointer
-      scanner.pointer += '<'.bytesize
+      scan('<')
       tokens << ::Rdown::Tokens::LessThan.new(
         pointer: pointer,
       )
@@ -173,7 +172,7 @@ module Rdown
 
     def consume_line_beginning_double_equal
       pointer = scanner.pointer
-      scanner.pointer += '=='.bytesize
+      scan('==')
       tokens << ::Rdown::Tokens::LineBeginningDoubleEqual.new(
         pointer: pointer,
       )
@@ -181,7 +180,7 @@ module Rdown
 
     def consume_line_beginning_triple_hyphen
       pointer = scanner.pointer
-      scanner.pointer += '---'.bytesize
+      scan('---')
       tokens << ::Rdown::Tokens::LineBeginningTripleHyphen.new(
         pointer: pointer,
       )
@@ -189,7 +188,7 @@ module Rdown
 
     def consume_line_beginning_equal
       pointer = scanner.pointer
-      scanner.pointer += '='.bytesize
+      scan('=')
       tokens << ::Rdown::Tokens::LineBeginningEqual.new(
         pointer: pointer,
       )
@@ -197,7 +196,7 @@ module Rdown
 
     def consume_line_break
       pointer = scanner.pointer
-      scanner.pointer += "\n".bytesize
+      scan("\n")
       tokens << ::Rdown::Tokens::LineBreak.new(
         pointer: pointer,
       )
@@ -205,7 +204,7 @@ module Rdown
 
     def consume_param
       pointer = scanner.pointer
-      scanner.pointer += '@param'.bytesize
+      scan('@param')
       tokens << ::Rdown::Tokens::Param.new(
         pointer: pointer,
       )
@@ -213,7 +212,7 @@ module Rdown
 
     def consume_parenthesis_left
       pointer = scanner.pointer
-      scanner.pointer += '('.bytesize
+      scan('(')
       tokens << ::Rdown::Tokens::ParenthesisLeft.new(
         pointer: pointer,
       )
@@ -221,7 +220,7 @@ module Rdown
 
     def consume_parenthesis_right
       pointer = scanner.pointer
-      scanner.pointer += ')'.bytesize
+      scan(')')
       tokens << ::Rdown::Tokens::ParenthesisRight.new(
         pointer: pointer,
       )
@@ -229,7 +228,7 @@ module Rdown
 
     def consume_pipe
       pointer = scanner.pointer
-      scanner.pointer += '|'.bytesize
+      scan('|')
       tokens << ::Rdown::Tokens::Pipe.new(
         pointer: pointer,
       )

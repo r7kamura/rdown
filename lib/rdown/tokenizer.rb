@@ -53,17 +53,17 @@ module Rdown
 
     # @return [Array<Rdown::Tokens::Base>]
     def call
-      until on_eos?
+      until at_eos?
         case
-        when on_beginning_of_line? && peek(3) == '---'
+        when at_beginning_of_line? && peek(3) == '---'
           tokenize_method_signature
-        when on_beginning_of_line? && peek(2) == '=='
+        when at_beginning_of_line? && peek(2) == '=='
           consume_line_beginning_double_equal
-        when on_beginning_of_line? && peek(1) == '='
+        when at_beginning_of_line? && peek(1) == '='
           consume_line_beginning_equal
-        when on_beginning_of_line? && peek(6) == '@param'
+        when at_beginning_of_line? && peek(6) == '@param'
           tokenize_method_parameter
-        when on_beginning_of_line? && peek(2) == '  '
+        when at_beginning_of_line? && peek(2) == '  '
           consume_code
         when peek(1) == "\n"
           consume_line_break
@@ -87,6 +87,16 @@ module Rdown
     end
 
     private
+
+    # @return [Boolean]
+    def at_beginning_of_line?
+      scanner.beginning_of_line?
+    end
+
+    # @return [Boolean]
+    def at_eos?
+      scanner.eos?
+    end
 
     def consume_arrow_right
       pointer = scanner.pointer
@@ -247,16 +257,6 @@ module Rdown
       scanner.match?(*args)
     end
 
-    # @return [Boolean]
-    def on_beginning_of_line?
-      scanner.beginning_of_line?
-    end
-
-    # @return [Boolean]
-    def on_eos?
-      scanner.eos?
-    end
-
     def peek(*args)
       scanner.peek(*args)
     end
@@ -292,7 +292,7 @@ module Rdown
     def tokenize_method_signature
       until peek(1) == "\n"
         case
-        when on_beginning_of_line? && peek(3) == '---'
+        when at_beginning_of_line? && peek(3) == '---'
           consume_line_beginning_triple_hyphen
         when peek(1) == ' '
           skip_spaces

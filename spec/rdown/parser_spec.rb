@@ -6,12 +6,12 @@ RSpec.describe Rdown::Parser do
       described_class.call(tokens)
     end
 
-    let(:pre_processed_lines) do
+    let(:pre_processed_source) do
       Rdown::PreProcessor.call(source)
     end
 
     let(:tokens) do
-      Rdown::Tokenizer.call(pre_processed_lines)
+      Rdown::Tokenizer.call(**pre_processed_source)
     end
 
     context 'with class name less tokens' do

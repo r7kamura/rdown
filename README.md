@@ -36,7 +36,8 @@ source = <<~RD
 nth 番目の要素を返します。nth 番目の要素が存在しない時には nil を返します。
 RD
 
-tokens = Rdown::Tokenizer.call(source)
+pre_processed_source = Rdown::PreProcessor.call(source)
+tokens = Rdown::Tokenizer.call(**pre_processed_source)
 node = Rdown::Parser.call(tokens)
 ```
 

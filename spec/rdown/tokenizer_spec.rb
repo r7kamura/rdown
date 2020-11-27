@@ -3,10 +3,10 @@
 RSpec.describe Rdown::Tokenizer do
   describe '.call' do
     subject do
-      described_class.call(pre_processed_lines)
+      described_class.call(**pre_processed_source)
     end
 
-    let(:pre_processed_lines) do
+    let(:pre_processed_source) do
       Rdown::PreProcessor.call(source)
     end
 

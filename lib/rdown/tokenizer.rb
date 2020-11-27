@@ -39,21 +39,35 @@ module Rdown
     }x.freeze
 
     class << self
-      # @param [Array<Rdown::PreProcessedLine>] source
+      # @param [String] source
+      # @param [Hash] source_map
       # @return [Array<Rdown::Tokens::Base>]
-      def call(source)
-        new(source).call
+      def call(
+        source:,
+        source_map:
+      )
+        new(
+          source: source,
+          source_map: source_map,
+        ).call
       end
     end
 
-    # @param [Array<Rdown::PreProcessedLine>] source
-    def initialize(source)
+    # @param [String] source
+    # @param [Hash] source_map
+    def initialize(
+      source:,
+      source_map:
+    )
+      @position = ::Rdown::Position.new
       @source = source
+      @source_map = source_map
     end
 
     # @return [Array<Rdown::Tokens::Base>]
     def call
       until at_eos?
+        reposition
         case
         when at_beginning_of_line? && peek(3) == '---'
           tokenize_method_signature
@@ -99,157 +113,157 @@ module Rdown
     end
 
     def consume_arrow_right
-      pointer = scanner.pointer
+      position = @position.clone
       scan('->')
       tokens << ::Rdown::Tokens::ArrowRight.new(
-        pointer: pointer,
+        position: position,
       )
     end
 
     def consume_asterisk
-      pointer = scanner.pointer
+      position = @position.clone
       scan('*')
       tokens << ::Rdown::Tokens::Asterisk.new(
-        pointer: pointer,
+        position: position,
       )
     end
 
     def consume_bracket_left
-      pointer = scanner.pointer
+      position = @position.clone
       scan('[')
       tokens << ::Rdown::Tokens::BracketLeft.new(
-        pointer: pointer,
+        position: position,
       )
     end
 
     def consume_bracket_right
-      pointer = scanner.pointer
+      position = @position.clone
       scan(']')
       tokens << ::Rdown::Tokens::BracketRight.new(
-        pointer: pointer,
+        position: position,
       )
     end
 
     def consume_class
-      pointer = scanner.pointer
+      position = @position.clone
       scan('class')
       tokens << ::Rdown::Tokens::Class.new(
-        pointer: pointer,
+        position: position,
       )
     end
 
     def consume_class_methods
-      pointer = scanner.pointer
+      position = @position.clone
       scan('Class Methods')
       tokens << ::Rdown::Tokens::ClassMethods.new(
-        pointer: pointer,
+        position: position,
       )
     end
 
     def consume_code
-      pointer = scanner.pointer
+      position = @position.clone
       content = scan(/  .+$/)
       tokens << ::Rdown::Tokens::Code.new(
         content: content[2..-1],
-        pointer: pointer,
+        position: position,
       )
     end
 
     def consume_identifier
-      pointer = scanner.pointer
+      position = @position.clone
       content = scan(METHOD_NAME_IDENTIFIER_PATTERN)
       tokens << ::Rdown::Tokens::Identifier.new(
         content: content,
-        pointer: pointer,
+        position: position,
       )
     end
 
     def consume_instance_methods
-      pointer = scanner.pointer
+      position = @position.clone
       scan('Instance Methods')
       tokens << ::Rdown::Tokens::InstanceMethods.new(
-        pointer: pointer,
+        position: position,
       )
     end
 
     def consume_less_than
-      pointer = scanner.pointer
+      position = @position.clone
       scan('<')
       tokens << ::Rdown::Tokens::LessThan.new(
-        pointer: pointer,
+        position: position,
       )
     end
 
     def consume_line_beginning_double_equal
-      pointer = scanner.pointer
+      position = @position.clone
       scan('==')
       tokens << ::Rdown::Tokens::LineBeginningDoubleEqual.new(
-        pointer: pointer,
+        position: position,
       )
     end
 
     def consume_line_beginning_triple_hyphen
-      pointer = scanner.pointer
+      position = @position.clone
       scan('---')
       tokens << ::Rdown::Tokens::LineBeginningTripleHyphen.new(
-        pointer: pointer,
+        position: position,
       )
     end
 
     def consume_line_beginning_equal
-      pointer = scanner.pointer
+      position = @position.clone
       scan('=')
       tokens << ::Rdown::Tokens::LineBeginningEqual.new(
-        pointer: pointer,
+        position: position,
       )
     end
 
     def consume_line_break
-      pointer = scanner.pointer
+      position = @position.clone
       scan("\n")
       tokens << ::Rdown::Tokens::LineBreak.new(
-        pointer: pointer,
+        position: position,
       )
     end
 
     def consume_param
-      pointer = scanner.pointer
+      position = @position.clone
       scan('@param')
       tokens << ::Rdown::Tokens::Param.new(
-        pointer: pointer,
+        position: position,
       )
     end
 
     def consume_parenthesis_left
-      pointer = scanner.pointer
+      position = @position.clone
       scan('(')
       tokens << ::Rdown::Tokens::ParenthesisLeft.new(
-        pointer: pointer,
+        position: position,
       )
     end
 
     def consume_parenthesis_right
-      pointer = scanner.pointer
+      position = @position.clone
       scan(')')
       tokens << ::Rdown::Tokens::ParenthesisRight.new(
-        pointer: pointer,
+        position: position,
       )
     end
 
     def consume_pipe
-      pointer = scanner.pointer
+      position = @position.clone
       scan('|')
       tokens << ::Rdown::Tokens::Pipe.new(
-        pointer: pointer,
+        position: position,
       )
     end
 
     def consume_word
-      pointer = scanner.pointer
+      position = @position.clone
       content = scan(/\S+/)
       tokens << ::Rdown::Tokens::Word.new(
         content: content,
-        pointer: pointer,
+        position: position,
       )
     end
 
@@ -262,7 +276,14 @@ module Rdown
     end
 
     def scan(*args)
-      scanner.scan(*args)
+      scanner.scan(*args).tap do |content|
+        if content == "\n"
+          @position.column = 1
+          @position.line += 1
+        else
+          @position.column += content.bytesize
+        end
+      end
     end
 
     # @return [String, nil]
@@ -272,15 +293,16 @@ module Rdown
 
     # @return [StringScanner]
     def scanner
-      if !@scanner || @scanner.eos?
-        @scanner = ::StringScanner.new(@source.shift&.content || '')
-      else
-        @scanner
-      end
+      @scanner ||= ::StringScanner.new(@source)
     end
 
     def skip_spaces
       scan(/ +/)
+    end
+
+    # @return [Rdown::Position, nil]
+    def source_mapped_position
+      @source_map[@position]
     end
 
     def tokenize_method_parameter
@@ -327,6 +349,10 @@ module Rdown
     # @return [Array<Rdown::Tokens::Base>]
     def tokens
       @tokens ||= []
+    end
+
+    def reposition
+      @position = source_mapped_position if source_mapped_position
     end
   end
 end

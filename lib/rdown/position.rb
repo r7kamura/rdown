@@ -16,5 +16,16 @@ module Rdown
     def go_to_next_line
       @line += 1
     end
+
+    def hash
+      to_hash.hash
+    end
+
+    def to_hash
+      {
+        column: @column,
+        line: @line,
+      }
+    end
   end
 end

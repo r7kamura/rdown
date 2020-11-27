@@ -7,7 +7,16 @@ on:
       - master
 
 jobs:
-  build:
+  rspec:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          ruby-version: 2.7.2
+      - run: bundle exec rspec --force-color
+  rubocop:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -17,4 +26,3 @@ jobs:
           ruby-version: 2.7.2
       - uses: r7kamura/rubocop-problem-matchers-action@v1
       - run: bundle exec rubocop --parallel
-      - run: bundle exec rspec --force-color

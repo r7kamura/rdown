@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 
-require 'active_support/core_ext/hash/keys'
-require 'active_support/core_ext/object/json'
-
 RSpec.describe Rdown::Parser do
   describe '.call' do
     subject do
-      described_class.call(tokens).as_json.deep_symbolize_keys
+      described_class.call(tokens)
     end
 
     let(:pre_processed_lines) do
@@ -46,7 +43,7 @@ RSpec.describe Rdown::Parser do
       end
 
       it 'returns expected node' do
-        is_expected.to eq(
+        is_expected.to be_as_json(
           class_methods: [],
           description: [
             {
@@ -94,7 +91,7 @@ RSpec.describe Rdown::Parser do
       end
 
       it 'returns expected node' do
-        is_expected.to eq(
+        is_expected.to be_as_json(
           class_methods: [],
           description: [],
           heading: {
@@ -160,7 +157,7 @@ RSpec.describe Rdown::Parser do
       end
 
       it 'returns expected node' do
-        is_expected.to eq(
+        is_expected.to be_as_json(
           class_methods: [
             {
               description: [

@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 
-require 'active_support/core_ext/hash/keys'
-require 'active_support/core_ext/object/json'
-
 RSpec.describe Rdown::Tokenizer do
   describe '.call' do
     subject do
-      described_class.call(pre_processed_lines).as_json.map(&:deep_symbolize_keys)
+      described_class.call(pre_processed_lines)
     end
 
     let(:pre_processed_lines) do
@@ -21,7 +18,7 @@ RSpec.describe Rdown::Tokenizer do
       end
 
       it 'returns expected tokens' do
-        is_expected.to match(
+        is_expected.to be_as_json(
           [
             hash_including(
               type: 'LineBeginningEqual',
@@ -57,7 +54,7 @@ RSpec.describe Rdown::Tokenizer do
       end
 
       it 'returns expected tokens' do
-        is_expected.to match(
+        is_expected.to be_as_json(
           [
             hash_including(
               type: 'Param',
@@ -104,7 +101,7 @@ RSpec.describe Rdown::Tokenizer do
       end
 
       it 'returns expected tokens' do
-        is_expected.to match(
+        is_expected.to be_as_json(
           [
             a_hash_including(
               type: 'Word'
@@ -144,7 +141,7 @@ RSpec.describe Rdown::Tokenizer do
       end
 
       it 'returns expected tokens' do
-        is_expected.to match(
+        is_expected.to be_as_json(
           [
             a_hash_including(type: 'LineBeginningDoubleEqual'),
             a_hash_including(type: 'InstanceMethods'),
@@ -162,7 +159,7 @@ RSpec.describe Rdown::Tokenizer do
       end
 
       it 'returns expected tokens' do
-        is_expected.to match(
+        is_expected.to be_as_json(
           [
             a_hash_including(type: 'LineBeginningDoubleEqual'),
             a_hash_including(type: 'ClassMethods'),
@@ -180,7 +177,7 @@ RSpec.describe Rdown::Tokenizer do
       end
 
       it 'returns expected tokens' do
-        is_expected.to match(
+        is_expected.to be_as_json(
           [
             a_hash_including(type: 'LineBeginningTripleHyphen'),
             a_hash_including(type: 'BracketLeft'),
@@ -204,7 +201,7 @@ RSpec.describe Rdown::Tokenizer do
       end
 
       it 'returns expected tokens' do
-        is_expected.to match(
+        is_expected.to be_as_json(
           [
             a_hash_including(type: 'LineBeginningTripleHyphen'),
             a_hash_including(type: 'Identifier'),

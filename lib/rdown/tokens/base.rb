@@ -5,12 +5,12 @@ module Rdown
     class Base
       include ::Rdown::Serializable
 
-      # @return [Integer]
-      attr_reader :pointer
+      # @return [Rdown::Position]
+      attr_reader :position
 
-      # @param [Integer] pointer
-      def initialize(pointer:)
-        @pointer = pointer
+      # @param [Rdown::Position] position
+      def initialize(position:)
+        @position = position
       end
     end
   end

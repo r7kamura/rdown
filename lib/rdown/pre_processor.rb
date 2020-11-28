@@ -4,7 +4,7 @@ module Rdown
   class PreProcessor
     class << self
       # @param [String] source
-      # @return [Rdown::PreProcessedSource]
+      # @return [Hash]
       def call(source)
         new(source).call
       end
@@ -15,11 +15,12 @@ module Rdown
       @position = ::Rdown::Position.new
       @pre_processed_lines = []
       @source = source
+      @source_map = {}
       @version_since = nil
       @version_until = nil
     end
 
-    # @return [Rdown::PreProcessedSource]
+    # @return [Hash]
     def call
       until source_lines.empty?
         case
@@ -35,7 +36,10 @@ module Rdown
           shift
         end
       end
-      @pre_processed_lines
+      {
+        source: @pre_processed_lines.join,
+        source_map: @source_map,
+      }
     end
 
     private
@@ -53,12 +57,8 @@ module Rdown
     end
 
     def consume_normal
-      position = @position.clone
-      source_line = shift
-      @pre_processed_lines << ::Rdown::PreProcessedLine.new(
-        content: source_line,
-        position: position,
-      )
+      @source_map[@position] = @position.clone
+      @pre_processed_lines << shift
     end
 
     def consume_since

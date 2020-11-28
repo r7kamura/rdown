@@ -6,7 +6,6 @@ module Rdown
     autoload :Class, 'rdown/nodes/class'
     autoload :ClassHeading, 'rdown/nodes/class_heading'
     autoload :CodeBlock, 'rdown/nodes/code_block'
-    autoload :HeadingLevel2, 'rdown/nodes/heading_level2'
     autoload :Method, 'rdown/nodes/method'
     autoload :MethodParameter, 'rdown/nodes/method_parameter'
     autoload :MethodSignature, 'rdown/nodes/method_signature'

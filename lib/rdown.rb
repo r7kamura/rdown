@@ -7,8 +7,10 @@ module Rdown
   autoload :Nodes, 'rdown/nodes'
   autoload :Parser, 'rdown/parser'
   autoload :Position, 'rdown/position'
+  autoload :PositionDelta, 'rdown/position_delta'
   autoload :PreProcessor, 'rdown/pre_processor'
   autoload :Serializable, 'rdown/serializable'
+  autoload :SourceMap, 'rdown/source_map'
   autoload :Tokenizer, 'rdown/tokenizer'
   autoload :Tokens, 'rdown/tokens'
 

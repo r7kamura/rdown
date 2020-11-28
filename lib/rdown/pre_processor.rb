@@ -15,7 +15,7 @@ module Rdown
       @position = ::Rdown::Position.new
       @pre_processed_lines = []
       @source = source
-      @source_map = {}
+      @source_map = ::Rdown::SourceMap.new
       @version_since = nil
       @version_until = nil
     end
@@ -57,7 +57,7 @@ module Rdown
     end
 
     def consume_normal
-      @source_map[@position] = @position.clone
+      @source_map.set(position_of_pre_processed_code, @position)
       @pre_processed_lines << shift
     end
 
@@ -71,9 +71,17 @@ module Rdown
       shift
     end
 
+    # @return [Rdown::Position]
+    def position_of_pre_processed_code
+      ::Rdown::Position.new(
+        column: 1,
+        line: @pre_processed_lines.length + 1,
+      )
+    end
+
     # @return [String]
     def shift
-      @position.go_to_next_line
+      @position = @position.go_to_next_line_head
       source_lines.shift
     end
 

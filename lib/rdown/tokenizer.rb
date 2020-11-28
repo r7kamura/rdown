@@ -67,7 +67,6 @@ module Rdown
     # @return [Array<Rdown::Tokens::Base>]
     def call
       until at_eos?
-        reposition
         case
         when at_beginning_of_line? && peek(3) == '---'
           tokenize_method_signature
@@ -113,7 +112,7 @@ module Rdown
     end
 
     def consume_arrow_right
-      position = @position.clone
+      position = original_source_position
       scan('->')
       tokens << ::Rdown::Tokens::ArrowRight.new(
         position: position,
@@ -121,7 +120,7 @@ module Rdown
     end
 
     def consume_asterisk
-      position = @position.clone
+      position = original_source_position
       scan('*')
       tokens << ::Rdown::Tokens::Asterisk.new(
         position: position,
@@ -129,7 +128,7 @@ module Rdown
     end
 
     def consume_bracket_left
-      position = @position.clone
+      position = original_source_position
       scan('[')
       tokens << ::Rdown::Tokens::BracketLeft.new(
         position: position,
@@ -137,7 +136,7 @@ module Rdown
     end
 
     def consume_bracket_right
-      position = @position.clone
+      position = original_source_position
       scan(']')
       tokens << ::Rdown::Tokens::BracketRight.new(
         position: position,
@@ -145,7 +144,7 @@ module Rdown
     end
 
     def consume_class
-      position = @position.clone
+      position = original_source_position
       scan('class')
       tokens << ::Rdown::Tokens::Class.new(
         position: position,
@@ -153,7 +152,7 @@ module Rdown
     end
 
     def consume_class_methods
-      position = @position.clone
+      position = original_source_position
       scan('Class Methods')
       tokens << ::Rdown::Tokens::ClassMethods.new(
         position: position,
@@ -161,7 +160,7 @@ module Rdown
     end
 
     def consume_code
-      position = @position.clone
+      position = original_source_position
       content = scan(/  .*$/)
       tokens << ::Rdown::Tokens::Code.new(
         content: content[2..-1],
@@ -170,7 +169,7 @@ module Rdown
     end
 
     def consume_identifier
-      position = @position.clone
+      position = original_source_position
       content = scan(METHOD_NAME_IDENTIFIER_PATTERN)
       tokens << ::Rdown::Tokens::Identifier.new(
         content: content,
@@ -179,7 +178,7 @@ module Rdown
     end
 
     def consume_instance_methods
-      position = @position.clone
+      position = original_source_position
       scan('Instance Methods')
       tokens << ::Rdown::Tokens::InstanceMethods.new(
         position: position,
@@ -187,7 +186,7 @@ module Rdown
     end
 
     def consume_less_than
-      position = @position.clone
+      position = original_source_position
       scan('<')
       tokens << ::Rdown::Tokens::LessThan.new(
         position: position,
@@ -195,7 +194,7 @@ module Rdown
     end
 
     def consume_line_beginning_double_equal
-      position = @position.clone
+      position = original_source_position
       scan('==')
       tokens << ::Rdown::Tokens::LineBeginningDoubleEqual.new(
         position: position,
@@ -203,7 +202,7 @@ module Rdown
     end
 
     def consume_line_beginning_triple_hyphen
-      position = @position.clone
+      position = original_source_position
       scan('---')
       tokens << ::Rdown::Tokens::LineBeginningTripleHyphen.new(
         position: position,
@@ -211,7 +210,7 @@ module Rdown
     end
 
     def consume_line_beginning_equal
-      position = @position.clone
+      position = original_source_position
       scan('=')
       tokens << ::Rdown::Tokens::LineBeginningEqual.new(
         position: position,
@@ -219,7 +218,7 @@ module Rdown
     end
 
     def consume_line_break
-      position = @position.clone
+      position = original_source_position
       scan("\n")
       tokens << ::Rdown::Tokens::LineBreak.new(
         position: position,
@@ -227,7 +226,7 @@ module Rdown
     end
 
     def consume_param
-      position = @position.clone
+      position = original_source_position
       scan('@param')
       tokens << ::Rdown::Tokens::Param.new(
         position: position,
@@ -235,7 +234,7 @@ module Rdown
     end
 
     def consume_parenthesis_left
-      position = @position.clone
+      position = original_source_position
       scan('(')
       tokens << ::Rdown::Tokens::ParenthesisLeft.new(
         position: position,
@@ -243,7 +242,7 @@ module Rdown
     end
 
     def consume_parenthesis_right
-      position = @position.clone
+      position = original_source_position
       scan(')')
       tokens << ::Rdown::Tokens::ParenthesisRight.new(
         position: position,
@@ -251,7 +250,7 @@ module Rdown
     end
 
     def consume_pipe
-      position = @position.clone
+      position = original_source_position
       scan('|')
       tokens << ::Rdown::Tokens::Pipe.new(
         position: position,
@@ -259,7 +258,7 @@ module Rdown
     end
 
     def consume_word
-      position = @position.clone
+      position = original_source_position
       content = scan(/\S+/)
       tokens << ::Rdown::Tokens::Word.new(
         content: content,
@@ -271,17 +270,23 @@ module Rdown
       scanner.match?(*args)
     end
 
+    # @return [Rdown::Position]
+    def original_source_position
+      @source_map.original_source_position_of(@position)
+    end
+
     def peek(*args)
       scanner.peek(*args)
     end
 
     def scan(*args)
       scanner.scan(*args).tap do |content|
-        if content == "\n"
-          @position.column = 1
-          @position.line += 1
-        else
-          @position.column += content.length
+        @position = begin
+          if content == "\n"
+            @position.go_to_next_line_head
+          else
+            @position.go_forward(content.length)
+          end
         end
       end
     end
@@ -298,11 +303,6 @@ module Rdown
 
     def skip_spaces
       scan(/ +/)
-    end
-
-    # @return [Rdown::Position, nil]
-    def source_mapped_position
-      @source_map[@position]
     end
 
     def tokenize_method_parameter
@@ -349,10 +349,6 @@ module Rdown
     # @return [Array<Rdown::Tokens::Base>]
     def tokens
       @tokens ||= []
-    end
-
-    def reposition
-      @position = source_mapped_position if source_mapped_position
     end
   end
 end

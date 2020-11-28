@@ -281,7 +281,7 @@ module Rdown
           @position.column = 1
           @position.line += 1
         else
-          @position.column += content.bytesize
+          @position.column += content.length
         end
       end
     end

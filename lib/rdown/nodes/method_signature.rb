@@ -8,9 +8,10 @@ module Rdown
 
       # @param [String] name
       def initialize(
-        name:
+        name:,
+        **args
       )
-        super()
+        super(**args)
         @name = name
       end
     end

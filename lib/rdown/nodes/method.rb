@@ -20,9 +20,10 @@ module Rdown
       def initialize(
         description:,
         parameters:,
-        signatures:
+        signatures:,
+        **args
       )
-        super()
+        super(**args)
         @description = description
         @parameters = parameters
         @signatures = signatures

@@ -4,7 +4,7 @@ require 'strscan'
 
 module Rdown
   class Tokenizer
-    METHOD_NAME_IDENTIFIER_PATTERN = %r{
+    METHOD_NAME_PATTERN = %r{
       (?:
         (?!\d)(?:\w|[^[:ascii:]])+[!?=]?
           | -
@@ -69,13 +69,17 @@ module Rdown
       until at_eos?
         case
         when at_beginning_of_line? && peek(3) == '---'
-          tokenize_method_signature
+          consume_line_beginning_triple_hyphen
+          skip_spaces
+          consume_method_signature
         when at_beginning_of_line? && peek(2) == '=='
           consume_line_beginning_double_equal
         when at_beginning_of_line? && peek(1) == '='
           consume_line_beginning_equal
         when at_beginning_of_line? && peek(6) == '@param'
-          tokenize_method_parameter
+          consume_param
+          skip_spaces
+          consume_identifier
         when at_beginning_of_line? && peek(2) == '  '
           consume_code
         when peek(1) == "\n"
@@ -111,38 +115,6 @@ module Rdown
       scanner.eos?
     end
 
-    def consume_arrow_right
-      position = original_source_position
-      scan('->')
-      tokens << ::Rdown::Tokens::ArrowRight.new(
-        position: position,
-      )
-    end
-
-    def consume_asterisk
-      position = original_source_position
-      scan('*')
-      tokens << ::Rdown::Tokens::Asterisk.new(
-        position: position,
-      )
-    end
-
-    def consume_bracket_left
-      position = original_source_position
-      scan('[')
-      tokens << ::Rdown::Tokens::BracketLeft.new(
-        position: position,
-      )
-    end
-
-    def consume_bracket_right
-      position = original_source_position
-      scan(']')
-      tokens << ::Rdown::Tokens::BracketRight.new(
-        position: position,
-      )
-    end
-
     def consume_class
       position = original_source_position
       scan('class')
@@ -170,7 +142,7 @@ module Rdown
 
     def consume_identifier
       position = original_source_position
-      content = scan(METHOD_NAME_IDENTIFIER_PATTERN)
+      content = scan(/\w+/)
       tokens << ::Rdown::Tokens::Identifier.new(
         content: content,
         position: position,
@@ -225,34 +197,21 @@ module Rdown
       )
     end
 
+    def consume_method_signature
+      position = original_source_position
+      method_name = scan(METHOD_NAME_PATTERN)
+      payload = scan(/[^\n]*/)
+      tokens << ::Rdown::Tokens::MethodSignature.new(
+        method_name: method_name,
+        payload: payload,
+        position: position,
+      )
+    end
+
     def consume_param
       position = original_source_position
       scan('@param')
       tokens << ::Rdown::Tokens::Param.new(
-        position: position,
-      )
-    end
-
-    def consume_parenthesis_left
-      position = original_source_position
-      scan('(')
-      tokens << ::Rdown::Tokens::ParenthesisLeft.new(
-        position: position,
-      )
-    end
-
-    def consume_parenthesis_right
-      position = original_source_position
-      scan(')')
-      tokens << ::Rdown::Tokens::ParenthesisRight.new(
-        position: position,
-      )
-    end
-
-    def consume_pipe
-      position = original_source_position
-      scan('|')
-      tokens << ::Rdown::Tokens::Pipe.new(
         position: position,
       )
     end
@@ -303,47 +262,6 @@ module Rdown
 
     def skip_spaces
       scan(/ +/)
-    end
-
-    def tokenize_method_parameter
-      consume_param
-      skip_spaces
-      consume_identifier
-    end
-
-    def tokenize_method_signature
-      until peek(1) == "\n"
-        case
-        when at_beginning_of_line? && peek(3) == '---'
-          consume_line_beginning_triple_hyphen
-        when peek(1) == ' '
-          skip_spaces
-        when peek(1) == '*'
-          consume_asterisk
-        when peek(1) == '{'
-          consume_brace_left
-        when peek(1) == '}'
-          consume_brace_right
-        when peek(1) == '['
-          consume_bracket_left
-        when peek(1) == ']'
-          consume_bracket_right
-        when peek(1) == '('
-          consume_parenthesis_left
-        when peek(1) == ')'
-          consume_parenthesis_right
-        when peek(1) == ','
-          consume_comma
-        when peek(1) == '|'
-          consume_pipe
-        when peek(3) == '...'
-          consume_triple_dot
-        when peek(2) == '->'
-          consume_arrow_right
-        else
-          consume_identifier
-        end
-      end
     end
 
     # @return [Array<Rdown::Tokens::Base>]

@@ -180,13 +180,7 @@ RSpec.describe Rdown::Tokenizer do
         is_expected.to be_as_json(
           [
             a_hash_including(type: 'LineBeginningTripleHyphen'),
-            a_hash_including(type: 'BracketLeft'),
-            a_hash_including(type: 'BracketRight'),
-            a_hash_including(type: 'ParenthesisLeft'),
-            a_hash_including(type: 'Identifier'),
-            a_hash_including(type: 'ParenthesisRight'),
-            a_hash_including(type: 'ArrowRight'),
-            a_hash_including(type: 'Identifier'),
+            a_hash_including(type: 'MethodSignature'),
             a_hash_including(type: 'LineBreak'),
           ]
         )
@@ -204,14 +198,7 @@ RSpec.describe Rdown::Tokenizer do
         is_expected.to be_as_json(
           [
             a_hash_including(type: 'LineBeginningTripleHyphen'),
-            a_hash_including(type: 'Identifier'),
-            a_hash_including(type: 'ParenthesisLeft'),
-            a_hash_including(type: 'Identifier'),
-            a_hash_including(type: 'ParenthesisRight'),
-            a_hash_including(type: 'ArrowRight'),
-            a_hash_including(type: 'Identifier'),
-            a_hash_including(type: 'Pipe'),
-            a_hash_including(type: 'Identifier'),
+            a_hash_including(type: 'MethodSignature'),
             a_hash_including(type: 'LineBreak'),
           ]
         )

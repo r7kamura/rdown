@@ -181,7 +181,7 @@ RSpec.describe Rdown::Parser do
                     name: 'try_convert',
                     position: {
                       column: 1,
-                      line: 6,
+                      line: 7,
                     },
                     type: 'MethodSignature',
                   ),
@@ -201,7 +201,7 @@ RSpec.describe Rdown::Parser do
                     name: '[]',
                     position: {
                       column: 1,
-                      line: 14,
+                      line: 16,
                     },
                     type: 'MethodSignature',
                   ),

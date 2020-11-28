@@ -8,9 +8,10 @@ module Rdown
 
       # @param [String] content
       def initialize(
-        content:
+        content:,
+        **args
       )
-        super()
+        super(**args)
         @content = content
       end
     end

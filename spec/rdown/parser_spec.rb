@@ -44,32 +44,34 @@ RSpec.describe Rdown::Parser do
 
       it 'returns expected node' do
         is_expected.to be_as_json(
-          class_methods: [],
-          description: [
-            {
-              content: '配列クラスです。 配列は任意の Ruby オブジェクトを要素として持つことができます。',
-              type: 'Paragraph',
-            },
-            {
-              content: '一般的には配列は配列式を使って',
-              type: 'Paragraph',
-            },
-            {
-              content: '[1, 2, 3]',
-              type: 'CodeBlock',
-            },
-            {
-              content: 'のように生成します。',
-              type: 'Paragraph',
-            },
-          ],
-          heading: {
-            name: 'Array',
-            parent_name: 'Object',
-            type: 'ClassHeading',
-          },
-          instance_methods: [],
-          type: 'Class',
+          a_hash_including(
+            class_methods: [],
+            description: [
+              a_hash_including(
+                content: '配列クラスです。 配列は任意の Ruby オブジェクトを要素として持つことができます。',
+                type: 'Paragraph',
+              ),
+              a_hash_including(
+                content: '一般的には配列は配列式を使って',
+                type: 'Paragraph',
+              ),
+              a_hash_including(
+                content: '[1, 2, 3]',
+                type: 'CodeBlock',
+              ),
+              a_hash_including(
+                content: 'のように生成します。',
+                type: 'Paragraph',
+              ),
+            ],
+            heading: a_hash_including(
+              name: 'Array',
+              parent_name: 'Object',
+              type: 'ClassHeading',
+            ),
+            instance_methods: [],
+            type: 'Class',
+          )
         )
       end
     end
@@ -92,42 +94,44 @@ RSpec.describe Rdown::Parser do
 
       it 'returns expected node' do
         is_expected.to be_as_json(
-          class_methods: [],
-          description: [],
-          heading: {
-            name: 'Array',
-            parent_name: 'Object',
-            type: 'ClassHeading',
-          },
-          instance_methods: [
-            {
-              description: [
-                {
-                  content: 'nth 番目の要素を返します。nth 番目の要素が存在しない時には nil を返します。',
-                  type: 'Paragraph',
-                },
-              ],
-              parameters: [
-                {
-                  description: '配列の要素を指定します。',
-                  name: 'item',
-                  type: 'MethodParameter',
-                },
-              ],
-              signatures: [
-                {
-                  name: '[]',
-                  type: 'MethodSignature',
-                },
-                {
-                  name: 'at',
-                  type: 'MethodSignature',
-                },
-              ],
-              type: 'Method',
-            },
-          ],
-          type: 'Class',
+          a_hash_including(
+            class_methods: [],
+            description: [],
+            heading: a_hash_including(
+              name: 'Array',
+              parent_name: 'Object',
+              type: 'ClassHeading',
+            ),
+            instance_methods: [
+              a_hash_including(
+                description: [
+                  a_hash_including(
+                    content: 'nth 番目の要素を返します。nth 番目の要素が存在しない時には nil を返します。',
+                    type: 'Paragraph',
+                  ),
+                ],
+                parameters: [
+                  a_hash_including(
+                    description: '配列の要素を指定します。',
+                    name: 'item',
+                    type: 'MethodParameter',
+                  ),
+                ],
+                signatures: [
+                  a_hash_including(
+                    name: '[]',
+                    type: 'MethodSignature',
+                  ),
+                  a_hash_including(
+                    name: 'at',
+                    type: 'MethodSignature',
+                  ),
+                ],
+                type: 'Method',
+              ),
+            ],
+            type: 'Class',
+          )
         )
       end
     end
@@ -158,52 +162,66 @@ RSpec.describe Rdown::Parser do
 
       it 'returns expected node' do
         is_expected.to be_as_json(
-          class_methods: [
-            {
-              description: [
-                {
-                  content: 'to_ary メソッドを用いて obj を配列に変換しようとします。',
-                  type: 'Paragraph',
-                },
-                {
-                  content: '何らかの理由で変換できないときには nil を返します。 このメソッドは引数が配列であるかどうかを調べるために使えます。',
-                  type: 'Paragraph',
-                },
-              ],
-              parameters: [],
-              signatures: [
-                {
-                  name: 'try_convert',
-                  type: 'MethodSignature',
-                },
-              ],
-              type: 'Method',
+          a_hash_including(
+            class_methods: [
+              a_hash_including(
+                description: [
+                  a_hash_including(
+                    content: 'to_ary メソッドを用いて obj を配列に変換しようとします。',
+                    type: 'Paragraph',
+                  ),
+                  a_hash_including(
+                    content: '何らかの理由で変換できないときには nil を返します。 このメソッドは引数が配列であるかどうかを調べるために使えます。',
+                    type: 'Paragraph',
+                  ),
+                ],
+                parameters: [],
+                signatures: [
+                  a_hash_including(
+                    name: 'try_convert',
+                    position: {
+                      column: 1,
+                      line: 6,
+                    },
+                    type: 'MethodSignature',
+                  ),
+                ],
+                type: 'Method',
+              ),
+              a_hash_including(
+                description: [
+                  a_hash_including(
+                    content: '引数 item を要素として持つ配列を生成して返します。',
+                    type: 'Paragraph',
+                  ),
+                ],
+                parameters: [],
+                signatures: [
+                  a_hash_including(
+                    name: '[]',
+                    position: {
+                      column: 1,
+                      line: 14,
+                    },
+                    type: 'MethodSignature',
+                  ),
+                ],
+                type: 'Method',
+              ),
+            ],
+            description: [],
+            heading: a_hash_including(
+              name: 'Array',
+              parent_name: 'Object',
+              type: 'ClassHeading',
+            ),
+            instance_methods: [],
+            position: {
+              column: 1,
+              line: 1,
             },
-            {
-              description: [
-                {
-                  content: '引数 item を要素として持つ配列を生成して返します。',
-                  type: 'Paragraph',
-                },
-              ],
-              parameters: [],
-              signatures: [
-                {
-                  name: '[]',
-                  type: 'MethodSignature',
-                },
-              ],
-              type: 'Method',
-            },
-          ],
-          description: [],
-          heading: {
-            name: 'Array',
-            parent_name: 'Object',
-            type: 'ClassHeading',
-          },
-          instance_methods: [],
-          type: 'Class',
+            type: 'Class',
+          )
         )
       end
     end

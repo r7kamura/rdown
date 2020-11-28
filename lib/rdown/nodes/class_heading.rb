@@ -13,9 +13,10 @@ module Rdown
       # @param [String, nil] parent_name
       def initialize(
         name:,
-        parent_name:
+        parent_name:,
+        **args
       )
-        super()
+        super(**args)
         @name = name
         @parent_name = parent_name
       end

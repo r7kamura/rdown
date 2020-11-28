@@ -15,9 +15,10 @@ module Rdown
       # @param [String] name
       def initialize(
         description:,
-        name:
+        name:,
+        **args
       )
-        super()
+        super(**args)
         @description = description
         @name = name
       end

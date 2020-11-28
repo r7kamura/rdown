@@ -59,6 +59,7 @@ module Rdown
     end
 
     def parse_class
+      position = @tokens.first.position
       heading = parse_class_heading
       description = parse_description
       class_methods = parse_class_methods
@@ -68,11 +69,13 @@ module Rdown
         description: description,
         heading: heading,
         instance_methods: instance_methods,
+        position: position,
       )
     end
 
     # @return [Rdown::Nodes::ClassHeading]
     def parse_class_heading
+      position = @tokens.first.position
       consume('LineBeginningEqual')
       consume('Class')
       name = consume('Word').content
@@ -84,6 +87,7 @@ module Rdown
       ::Rdown::Nodes::ClassHeading.new(
         name: name,
         parent_name: parent_name,
+        position: position,
       )
     end
 
@@ -106,9 +110,11 @@ module Rdown
 
     # @return [Rdown::Nodes::CodeBlock]
     def parse_code_block
+      position = @tokens.first.position
       content = parse_code_block_lines
       ::Rdown::Nodes::CodeBlock.new(
         content: content,
+        position: position,
       )
     end
 
@@ -166,12 +172,14 @@ module Rdown
 
     # @return [Rdown::Nodes::Method]
     def parse_method
+      position = @tokens.first.position
       method_signatures = parse_method_signatures
       description = parse_description
       method_parameters = parse_method_parameters
       ::Rdown::Nodes::Method.new(
         description: description,
         parameters: method_parameters,
+        position: position,
         signatures: method_signatures,
       )
     end
@@ -198,12 +206,14 @@ module Rdown
 
     # @return [Rdown::Nodes::MethodParameter]
     def parse_method_parameter
+      position = @tokens.first.position
       consume('Param')
       name = consume('Identifier').content
       description = parse_words
       ::Rdown::Nodes::MethodParameter.new(
         description: description,
         name: name,
+        position: position,
       )
     end
 
@@ -216,12 +226,14 @@ module Rdown
 
     # @return [Rdown::Nodes::MethodSignature]
     def parse_method_signature
+      position = @tokens.first.position
       consume('LineBeginningTripleHyphen')
       name = parse_method_name
       skip until at?('LineBreak')
       consume('LineBreak')
       ::Rdown::Nodes::MethodSignature.new(
         name: name,
+        position: position,
       )
     end
 
@@ -251,6 +263,7 @@ module Rdown
 
     # @return [Rdown::Nodes::Paragraph]
     def parse_paragraph
+      position = @tokens.first.position
       sections = []
       while at?('Word')
         sections << parse_words
@@ -258,6 +271,7 @@ module Rdown
       end
       ::Rdown::Nodes::Paragraph.new(
         content: sections.join(' '),
+        position: position,
       )
     end
 

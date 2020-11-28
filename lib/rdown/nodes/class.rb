@@ -23,9 +23,10 @@ module Rdown
         class_methods:,
         description:,
         heading:,
-        instance_methods:
+        instance_methods:,
+        **args
       )
-        super()
+        super(**args)
         @class_methods = class_methods
         @description = description
         @heading = heading

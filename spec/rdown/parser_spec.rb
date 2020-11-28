@@ -119,11 +119,11 @@ RSpec.describe Rdown::Parser do
                 ],
                 signatures: [
                   a_hash_including(
-                    name: '[]',
+                    method_name: '[]',
                     type: 'MethodSignature',
                   ),
                   a_hash_including(
-                    name: 'at',
+                    method_name: 'at',
                     type: 'MethodSignature',
                   ),
                 ],
@@ -178,7 +178,7 @@ RSpec.describe Rdown::Parser do
                 parameters: [],
                 signatures: [
                   a_hash_including(
-                    name: 'try_convert',
+                    method_name: 'try_convert',
                     position: {
                       column: 1,
                       line: 7,
@@ -198,7 +198,7 @@ RSpec.describe Rdown::Parser do
                 parameters: [],
                 signatures: [
                   a_hash_including(
-                    name: '[]',
+                    method_name: '[]',
                     position: {
                       column: 1,
                       line: 16,

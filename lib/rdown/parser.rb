@@ -228,11 +228,10 @@ module Rdown
     def parse_method_signature
       position = @tokens.first.position
       consume('LineBeginningTripleHyphen')
-      name = parse_method_name
-      skip until at?('LineBreak')
+      method_name = consume('MethodSignature').method_name
       consume('LineBreak')
       ::Rdown::Nodes::MethodSignature.new(
-        name: name,
+        method_name: method_name,
         position: position,
       )
     end

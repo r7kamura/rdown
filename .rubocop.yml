@@ -23,6 +23,9 @@ Style/Documentation:
 Style/EmptyCaseCondition:
   Enabled: false
 
+Style/MultilineBlockChain:
+  Enabled: false
+
 Style/TrailingCommaInArguments:
   Enabled: false
 

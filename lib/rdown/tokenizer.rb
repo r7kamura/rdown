@@ -162,7 +162,7 @@ module Rdown
 
     def consume_code
       position = @position.clone
-      content = scan(/  .+$/)
+      content = scan(/  .*$/)
       tokens << ::Rdown::Tokens::Code.new(
         content: content[2..-1],
         position: position,

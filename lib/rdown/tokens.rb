@@ -15,6 +15,7 @@ module Rdown
     autoload :LineBreak, 'rdown/tokens/line_break'
     autoload :MethodSignature, 'rdown/tokens/method_signature'
     autoload :Param, 'rdown/tokens/param'
+    autoload :Raise, 'rdown/tokens/raise'
     autoload :Word, 'rdown/tokens/word'
   end
 end

@@ -289,5 +289,25 @@ RSpec.describe Rdown::Parser do
         expect(subject.class_methods.count).to eq(2)
       end
     end
+
+    context 'with empty line between @param' do
+      let(:source) do
+        <<~'RD'
+          = class Array < Object
+
+          == Class Methods
+
+          --- new(size = 0, val = nil)    -> Array
+
+          @param size 配列の長さを数値で指定します。
+
+          @param val 配列の要素の値を指定します。
+        RD
+      end
+
+      it 'returns expected node' do
+        expect(subject.class_methods.first.parameters.count).to eq(2)
+      end
+    end
   end
 end

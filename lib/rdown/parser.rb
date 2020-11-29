@@ -222,7 +222,16 @@ module Rdown
     # @return [Array<Rdown::Nodes::MethodParameter>]
     def parse_method_parameters
       method_parameters = []
-      method_parameters << parse_method_parameter while at?('Param')
+      loop do
+        case
+        when at?('Param')
+          method_parameters << parse_method_parameter
+        when at?('LineBreak')
+          skip
+        else
+          break
+        end
+      end
       method_parameters
     end
 

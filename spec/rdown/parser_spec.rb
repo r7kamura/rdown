@@ -262,5 +262,32 @@ RSpec.describe Rdown::Parser do
         )
       end
     end
+
+    context 'with example code after @param' do
+      let(:source) do
+        <<~'RD'
+          = class Array < Object
+
+          == Class Methods
+
+          --- [](*item)    -> Array
+
+          [[c:Array]] のサブクラスを作成したしたときに、そのサブクラスのインスタンスを作成
+          しやすくするために用意されている。
+
+          @param item 配列の要素を指定します。
+
+            Array[1, 2, 3] #=> [1, 2, 3]
+
+          --- new(size = 0, val = nil)    -> Array
+
+          長さ size の配列を生成し、各要素を val で初期化して返します。
+        RD
+      end
+
+      it 'returns expected node' do
+        expect(subject.class_methods.count).to eq(2)
+      end
+    end
   end
 end

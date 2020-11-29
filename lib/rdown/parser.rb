@@ -176,10 +176,12 @@ module Rdown
       method_signatures = parse_method_signatures
       description = parse_description
       method_parameters = parse_method_parameters
+      post_description = parse_description
       ::Rdown::Nodes::Method.new(
         description: description,
         parameters: method_parameters,
         position: position,
+        post_description: post_description,
         signatures: method_signatures,
       )
     end

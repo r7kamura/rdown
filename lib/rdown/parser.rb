@@ -173,17 +173,49 @@ module Rdown
     # @return [Rdown::Nodes::Method]
     def parse_method
       position = @tokens.first.position
-      method_signatures = parse_method_signatures
+      signatures = parse_method_signatures
       description = parse_description
-      method_parameters = parse_method_parameters
+      parameters = parse_method_parameters
+      skip_line_breaks
+      exceptions = parse_method_exceptions
       post_description = parse_description
       ::Rdown::Nodes::Method.new(
         description: description,
-        parameters: method_parameters,
+        exceptions: exceptions,
+        parameters: parameters,
         position: position,
         post_description: post_description,
-        signatures: method_signatures,
+        signatures: signatures,
       )
+    end
+
+    # @return [Rdown::Nodes::MethodParameter]
+    def parse_method_exception
+      position = @tokens.first.position
+      consume('Raise')
+      name = consume('Identifier').content
+      description = parse_words
+      ::Rdown::Nodes::MethodException.new(
+        description: description,
+        name: name,
+        position: position,
+      )
+    end
+
+    # @return [Array<Rdown::Nodes::MethodException>]
+    def parse_method_exceptions
+      method_exceptions = []
+      loop do
+        case
+        when at?('Raise')
+          method_exceptions << parse_method_exception
+        when at?('LineBreak')
+          skip
+        else
+          break
+        end
+      end
+      method_exceptions
     end
 
     # @return [String]

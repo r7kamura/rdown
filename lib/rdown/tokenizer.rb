@@ -80,6 +80,10 @@ module Rdown
           consume_param
           skip_spaces
           consume_identifier
+        when at_beginning_of_line? && peek(6) == '@raise'
+          consume_raise
+          skip_spaces
+          consume_identifier
         when at_beginning_of_line? && peek(2) == '  '
           consume_code
         when peek(1) == "\n"
@@ -212,6 +216,14 @@ module Rdown
       position = original_source_position
       scan('@param')
       tokens << ::Rdown::Tokens::Param.new(
+        position: position,
+      )
+    end
+
+    def consume_raise
+      position = original_source_position
+      scan('@raise')
+      tokens << ::Rdown::Tokens::Raise.new(
         position: position,
       )
     end

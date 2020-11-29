@@ -6,6 +6,9 @@ module Rdown
       # @return [Array<Rdown::Nodes::Base>]
       attr_reader :description
 
+      # @return [Array<Rdown::Nodes::MethodException>]
+      attr_reader :exceptions
+
       # @return [Array<Rdown::Nodes::MethodParameter>]
       attr_reader :parameters
 
@@ -16,6 +19,7 @@ module Rdown
       attr_reader :signatures
 
       # @param [Array<Rdown::Nodes::Base>] description
+      # @param [Array<Rdown::Nodes::MethodException>] exceptions
       # @param [Array<Rdown::Nodes::MethodParameter>] parameters
       # @param [Array<Rdown::Nodes::Base>] post_description
       # @param [Array<Rdown::Nodes::Base>] signature
@@ -23,6 +27,7 @@ module Rdown
       # @param [String, nil] version_until
       def initialize(
         description:,
+        exceptions:,
         parameters:,
         post_description:,
         signatures:,
@@ -30,6 +35,7 @@ module Rdown
       )
         super(**args)
         @description = description
+        @exceptions = exceptions
         @parameters = parameters
         @post_description = post_description
         @signatures = signatures

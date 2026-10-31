@@ -1,5 +1,8 @@
 # Rdown
 
+> [!NOTE]
+> This project is archived because I no longer actively use it, and there seems to be no recent activity from other users either. If you are still using it and would like to take over maintenance, contact me somewhere.
+
 [![](https://github.com/r7kamura/rdown/workflows/test/badge.svg)](https://github.com/r7kamura/rdown/actions?query=workflow%3Atest)
 
 Parser for [Ruby Reference Manual](https://github.com/rurema/doctree).
